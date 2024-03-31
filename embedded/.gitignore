@@ -1,0 +1,8 @@
+.vscode/
+.idea/
+
+src/secrets.py
+
+Pipfile.lock
+
+*.uf2
