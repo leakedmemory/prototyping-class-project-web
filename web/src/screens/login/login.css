@@ -1,0 +1,37 @@
+.login {
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 30px 40px;
+  text-align: center;
+}
+
+.title {
+  color: var(--black);
+  margin: 0 0 45px 0;
+  line-height: 58px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  margin-left: 10px;
+}
+
+.div-input {
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: var(--gray);
+  border-style: solid;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+}
+.div-input:nth-child(1) {
+  margin-bottom: 15px;
+}
+.div-input:nth-child(2) {
+  margin-bottom: 30px;
+}
