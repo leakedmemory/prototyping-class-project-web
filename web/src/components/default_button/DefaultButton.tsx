@@ -1,14 +1,19 @@
 import "./defaultButton.css"
 
-interface propsButton {
+interface props {
   title: String;
-  type: "submit" | "reset" | "button" | undefined;
+  type?: "submit" | "reset" | "button";
+  marginBottom?: number;
 }
 
-export default function DefaultButton({ title, type }: propsButton) {
+export default function DefaultButton({ title, type, marginBottom }: props) {
   return (
     <>
-      <button className="default-button" type={type}>
+      <button
+        className="default-button"
+        type={type}
+        style={{ marginBottom: marginBottom ?? 0 }}
+      >
         {title}
       </button>
     </>

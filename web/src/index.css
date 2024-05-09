@@ -6,6 +6,7 @@
   --black: #353535;
   --gray: #828282;
   --crystal-blue:#ABFBF1;
+  --blue-link: #2F72AF;
 }
 
 body {
@@ -26,4 +27,14 @@ button, input {
   font: inherit;
   cursor: pointer;
   outline: inherit;
+}
+
+.default-icon {
+  color: var(--gray);
+}
+
+.default-link {
+  color: var(--blue-link);
+  text-decoration: none;
+  font-weight: bold;
 }
