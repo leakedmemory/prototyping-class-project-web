@@ -2,11 +2,12 @@
   font-family: 'Inter';
   src: local('Inter'), url(./assets/fonts/Inter[slnt\,wght].ttf);
 
-  --white: #f8f8ff;
+  --white: #F8F8FF;
   --black: #353535;
   --gray: #828282;
   --crystal-blue:#ABFBF1;
   --blue-link: #2F72AF;
+  --green: #5DBB63;
 }
 
 body {
