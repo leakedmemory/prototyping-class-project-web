@@ -1,13 +1,16 @@
 :root {
-  font-family: 'Inter';
-  src: local('Inter'), url(./assets/fonts/Inter[slnt\,wght].ttf);
+  font-family: "Inter", sans-serif;
 
   --white: #F8F8FF;
+  --total-white: #FFF;
   --black: #353535;
+  --pitch-black: #000;
   --gray: #828282;
   --crystal-blue:#ABFBF1;
-  --blue-link: #2F72AF;
-  --green: #5DBB63;
+  --link-blue: #2F72AF;
+  --fern-green: #5DBB63;
+  --tomato: #FF6347;
+  --light-salmon: #FFA07A;
 }
 
 body {
@@ -35,7 +38,7 @@ button, input {
 }
 
 .default-link {
-  color: var(--blue-link);
+  color: var(--link-blue);
   text-decoration: none;
   font-weight: bold;
 }
