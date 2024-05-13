@@ -8,7 +8,7 @@ import { useState } from "react";
 const userPets: petCardProps[] = [
   {
     name: "Sagwa",
-    type: "Cat",
+    type: "Gato",
     age: 3,
     breed: "Siamês",
   },
@@ -38,9 +38,9 @@ export default function Dashboard() {
         <MdOutlineAddCircle className="add-pet-dashboard" />
       </div>
       <div>
-        {userPets.map((data) => {
+        {userPets.map((data, idx) => {
           return (
-            <PetCard {...data} />
+            <PetCard key={idx} {...data} />
           )
         })}
       </div>

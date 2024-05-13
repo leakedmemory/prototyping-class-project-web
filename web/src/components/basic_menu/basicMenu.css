@@ -1,0 +1,10 @@
+.dots-icon-basic-menu {
+  width: 30px;
+  height: 30px;
+  color: var(--black);
+  cursor: pointer;
+}
+
+.delete-item-basic-menu {
+  color: var(--tomato);
+}

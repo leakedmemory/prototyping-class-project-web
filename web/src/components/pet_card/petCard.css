@@ -9,7 +9,20 @@
   flex-direction: row;
   gap: 10px;
   align-items: center;
-  cursor: pointer;
+}
+
+.profile-petcard {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.profile-data-petcard {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .profile-column-petcard {
