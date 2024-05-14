@@ -9,6 +9,7 @@
   flex-direction: row;
   gap: 10px;
   align-items: center;
+  margin-bottom: 5px;
 }
 
 .profile-petcard {
@@ -41,4 +42,15 @@
   width: 25px;
   height: 25px;
   cursor: pointer;
+}
+
+.input-edit-pet {
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: var(--gray);
+  border-style: solid;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
