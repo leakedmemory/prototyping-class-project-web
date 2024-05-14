@@ -2,8 +2,8 @@ import { Formik } from "formik";
 import { FaLock, FaAt } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
-import "./login.css"
-import DefaultButton from "../../components/default_button/DefaultButton"
+import "./login.css";
+import DefaultButton from "../../components/default_button/DefaultButton";
 
 export default function Login() {
   return (
@@ -12,7 +12,6 @@ export default function Login() {
       <div className="inputs-login">
         <Formik
           initialValues={{ email: "", password: "" }}
-          validate={_ => { }}
           onSubmit={(_, { setSubmitting }) => {
             setTimeout(() => {
               setSubmitting(false);
@@ -56,12 +55,14 @@ export default function Login() {
               <DefaultButton title="Entrar" type="submit" marginBottom={22} />
               <div className="signup-message-login">
                 <p>Ainda não possui conta?</p>
-                <Link to="/signup" className="default-link">Cadastre-se</Link>
+                <Link to="/signup" className="default-link">
+                  Cadastre-se
+                </Link>
               </div>
             </form>
           )}
         </Formik>
       </div>
     </div>
-  )
+  );
 }

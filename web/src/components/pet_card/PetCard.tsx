@@ -1,13 +1,15 @@
 import { PiUserCircleFill } from "react-icons/pi";
 
-import "./petCard.css"
-import BasicMenu from "../basic_menu/BasicMenu"
+import "./petCard.css";
+
+import editIcon from "../../assets/editIcon.svg";
+import deleteIcon from "../../assets/deleteIcon.svg";
 
 export interface petCardProps {
-  name: String,
-  type: String,
-  age: number,
-  breed: String,
+  name: string;
+  type: string;
+  age: number;
+  breed: string;
 }
 
 export default function PetCard({ name, type, age, breed }: petCardProps) {
@@ -25,8 +27,11 @@ export default function PetCard({ name, type, age, breed }: petCardProps) {
             <p>{breed}</p>
           </div>
         </div>
-        <BasicMenu items={["Editar", "Deletar"]} />
+        <div className="icon-div-petcard">
+          <img src={editIcon} alt="edit icon" className="icon-petcard" />
+          <img src={deleteIcon} alt="delete icon" className="icon-petcard" />
+        </div>
       </div>
     </div>
-  )
+  );
 }

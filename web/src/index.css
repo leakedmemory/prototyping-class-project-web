@@ -1,16 +1,16 @@
 :root {
   font-family: "Inter", sans-serif;
 
-  --white: #F8F8FF;
-  --total-white: #FFF;
+  --white: #f8f8ff;
+  --total-white: #fff;
   --black: #353535;
   --pitch-black: #000;
   --gray: #828282;
-  --crystal-blue:#ABFBF1;
-  --link-blue: #2F72AF;
-  --fern-green: #5DBB63;
-  --tomato: #FF6347;
-  --light-salmon: #FFA07A;
+  --crystal-blue: #abfbf1;
+  --link-blue: #2f72af;
+  --fern-green: #5dbb63;
+  --tomato-red: #ff6347;
+  --light-salmon: #ffa07a;
 }
 
 body {
@@ -23,7 +23,8 @@ body {
   min-width: 100vw;
 }
 
-button, input {
+button,
+input {
   background: none;
   color: inherit;
   border: none;

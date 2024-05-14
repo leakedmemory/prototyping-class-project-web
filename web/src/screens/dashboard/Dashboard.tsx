@@ -1,8 +1,8 @@
 import { PiUserCircleFill } from "react-icons/pi";
 import { MdOutlineAddCircle } from "react-icons/md";
 
-import "./dashboard.css"
-import PetCard, { petCardProps } from "../../components/pet_card/PetCard"
+import "./dashboard.css";
+import PetCard, { petCardProps } from "../../components/pet_card/PetCard";
 import { useState } from "react";
 
 const userPets: petCardProps[] = [
@@ -12,14 +12,14 @@ const userPets: petCardProps[] = [
     age: 3,
     breed: "Siamês",
   },
-]
+];
 
 export default function Dashboard() {
-  const [userProfile, _] = useState({
+  const [userProfile] = useState({
     name: "Dudu",
     email: "duduzinho@exemplo.com",
-    number: "(83) 90000-0001"
-  })
+    number: "(83) 90000-0001",
+  });
 
   return (
     <div className="dashboard">
@@ -39,11 +39,9 @@ export default function Dashboard() {
       </div>
       <div>
         {userPets.map((data, idx) => {
-          return (
-            <PetCard key={idx} {...data} />
-          )
+          return <PetCard key={idx} {...data} />;
         })}
       </div>
     </div>
-  )
+  );
 }

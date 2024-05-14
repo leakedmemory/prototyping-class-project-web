@@ -31,3 +31,14 @@
   line-height: 0;
   font-size: 18px;
 }
+
+.icon-div-petcard {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-petcard {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}

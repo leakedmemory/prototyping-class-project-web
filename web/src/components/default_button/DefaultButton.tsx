@@ -1,7 +1,7 @@
-import "./defaultButton.css"
+import "./defaultButton.css";
 
 interface props {
-  title: String;
+  title: string;
   type?: "submit" | "reset" | "button";
   marginBottom?: number;
 }
@@ -17,5 +17,5 @@ export default function DefaultButton({ title, type, marginBottom }: props) {
         {title}
       </button>
     </>
-  )
+  );
 }
