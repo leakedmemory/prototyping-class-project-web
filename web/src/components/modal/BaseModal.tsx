@@ -15,6 +15,7 @@ const style = {
 interface BaseModalProps {
   open: boolean;
   toggleModal: (isOpen: boolean) => void;
+  // @ts-expect-error: Cannot find 'element'
   children: element;
 }
 

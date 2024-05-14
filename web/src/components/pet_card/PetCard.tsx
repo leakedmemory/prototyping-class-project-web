@@ -1,12 +1,10 @@
 import { PiUserCircleFill } from "react-icons/pi";
-
-import "./petCard.css";
-
-import editIcon from "../../assets/editIcon.svg";
-import deleteIcon from "../../assets/deleteIcon.svg";
 import { useState } from "react";
 import { Formik } from "formik";
 
+import "./petCard.css";
+import editIcon from "../../assets/editIcon.svg";
+import deleteIcon from "../../assets/deleteIcon.svg";
 import BaseModal from "../../components/modal/BaseModal";
 import DefaultButton from "../default_button/DefaultButton";
 
@@ -16,6 +14,7 @@ export interface petCardDataProps {
   age: string;
   breed: string;
 }
+
 export interface petCardProps extends petCardDataProps {
   editPet?: (petCardDataProps: petCardDataProps) => void;
 }

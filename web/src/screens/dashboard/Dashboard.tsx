@@ -1,6 +1,7 @@
 import { PiUserCircleFill } from "react-icons/pi";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { useState } from "react";
+import { Formik } from "formik";
 
 import "./dashboard.css";
 import PetCard, {
@@ -8,7 +9,6 @@ import PetCard, {
   petCardProps,
 } from "../../components/pet_card/PetCard";
 import BaseModal from "../../components/modal/BaseModal";
-import { Formik } from "formik";
 import DefaultButton from "../../components/default_button/DefaultButton";
 
 export default function Dashboard() {
@@ -17,14 +17,16 @@ export default function Dashboard() {
     email: "duduzinho@exemplo.com",
     number: "(83) 90000-0001",
   });
+
   const [pets, setPets] = useState<petCardProps[]>([
     {
+      name: "Sagwa",
+      animalType: "Gato",
       age: "3",
-      name: "sagwa",
-      animalType: "gato",
-      breed: "siamesa",
+      breed: "Siamês",
     },
   ]);
+
   const [modalAddPet, toggleModalAddPet] = useState(false);
 
   return (
@@ -52,13 +54,10 @@ export default function Dashboard() {
             return (
               <PetCard
                 key={idx}
+                editPet={(data) =>
+                  setPets([...pets.slice(0, idx), data, ...pets.slice(idx + 1)])
+                }
                 {...data}
-                editPet={(data) => {
-                  setPets((prevState) => {
-                    prevState[idx] = data;
-                    return prevState;
-                  });
-                }}
               />
             );
           })

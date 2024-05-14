@@ -36,8 +36,8 @@
 }
 
 .add-pet-dashboard {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   color: var(--fern-green);
   cursor: pointer;
 }
