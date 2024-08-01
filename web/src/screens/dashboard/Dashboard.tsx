@@ -22,7 +22,31 @@ export default function Dashboard() {
     {
       name: "Sagwa",
       animalType: "Gato",
+      age: "1",
+      breed: "Siamês",
+    },
+    {
+      name: "Sagwa",
+      animalType: "Gato",
+      age: "2",
+      breed: "Siamês",
+    },
+    {
+      name: "Sagwa",
+      animalType: "Gato",
       age: "3",
+      breed: "Siamês",
+    },
+    {
+      name: "Sagwa",
+      animalType: "Gato",
+      age: "4",
+      breed: "Siamês",
+    },
+    {
+      name: "Sagwa",
+      animalType: "Gato",
+      age: "5",
       breed: "Siamês",
     },
   ]);
@@ -57,6 +81,9 @@ export default function Dashboard() {
                 editPet={(data) =>
                   setPets([...pets.slice(0, idx), data, ...pets.slice(idx + 1)])
                 }
+                deletePet={() => {
+                  setPets([...pets.slice(0, idx), ...pets.slice(idx + 1)])
+                }}
                 {...data}
               />
             );

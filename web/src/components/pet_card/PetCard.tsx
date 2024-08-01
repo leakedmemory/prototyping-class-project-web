@@ -16,6 +16,7 @@ export interface petCardDataProps {
 }
 
 export interface petCardProps extends petCardDataProps {
+  deletePet?: () => void;
   editPet?: (petCardDataProps: petCardDataProps) => void;
 }
 
@@ -25,6 +26,7 @@ export default function PetCard({
   age,
   breed,
   editPet,
+  deletePet
 }: petCardProps) {
   const [modalEditPet, toggleModalEditPet] = useState(false);
 
@@ -49,7 +51,7 @@ export default function PetCard({
             className="icon-petcard"
             onClick={() => toggleModalEditPet(true)}
           />
-          <img src={deleteIcon} alt="delete icon" className="icon-petcard" />
+          <img src={deleteIcon} alt="delete icon" className="icon-petcard" onClick={() => deletePet!()} />
         </div>
       </div>
       <BaseModal
