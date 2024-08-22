@@ -1,3 +1,0 @@
-# Collar Web
-
-TODO

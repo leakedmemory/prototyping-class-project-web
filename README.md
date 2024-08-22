@@ -1,4 +1,3 @@
-# Eletronic Collar
+# Eletronic Leash
 
 TODO
-
