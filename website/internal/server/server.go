@@ -8,13 +8,15 @@ import (
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
+
+	"website/internal/db"
 )
 
-func NewServer() *http.Server {
+func NewServer(database *db.DB) *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", port),
-		Handler:      RegisterRoutes(),
+		Handler:      RegisterRoutes(database),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

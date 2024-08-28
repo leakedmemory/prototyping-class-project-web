@@ -1,0 +1,66 @@
+package template
+
+templ UserSignUp() {
+	@doctype() {
+		@head("Cadastro") {
+			<style>
+        main {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          min-width: 100vw;
+          min-height: 100vh;
+        }
+      </style>
+		}
+		@body() {
+			<main class="container">
+				<form hx-post="/user">
+					<fieldset>
+						<label>
+							Nome:
+							<input
+								name="name"
+								type="text"
+								placeholder="Insira seu nome"
+								required
+							/>
+						</label>
+						<label>
+							Email:
+							<input
+								name="email"
+								type="email"
+								placeholder="Insira seu email"
+								required
+							/>
+						</label>
+						<label>
+							Telefone:
+							<input
+								name="phone"
+								type="tel"
+								placeholder="Insira seu telefone para contato"
+								required
+							/>
+						</label>
+						<label>
+							Senha:
+							<input
+								name="password"
+								type="password"
+								placeholder="Insira a senha desejada"
+								required
+							/>
+						</label>
+					</fieldset>
+					<input type="submit" value="Cadastrar"/>
+				</form>
+				<p>
+					Já possui uma conta? <a href="/user/login">Fazer login</a>
+				</p>
+			</main>
+		}
+	}
+}

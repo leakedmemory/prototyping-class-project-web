@@ -22,9 +22,7 @@ clean:
 	@echo "Cleaning..."
 	@rm -f $(BIN)
 
-# shutting down first in case there is an instance already running
 watch:
-	@./scripts/shutdown.sh
 	@./scripts/watch.sh
 
 shutdown:
