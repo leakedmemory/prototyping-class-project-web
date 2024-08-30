@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-if [ -f tmp/air.pid ]; then
+air_pids=$(pgrep air)
+if [ -n "$air_pids" ]; then
     echo "Shutting down..."
-    kill $(cat tmp/air.pid)
-    rm -f tmp/air.pid tmp/build-errors.log
+    kill $air_pids
+else
+    echo "No running server was found"
 fi

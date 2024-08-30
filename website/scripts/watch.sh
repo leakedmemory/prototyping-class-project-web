@@ -41,7 +41,4 @@ if [[ -z "${PORT}" ]]; then
     exit 1
 fi
 
-mkdir -p tmp
-air &>tmp/air.log &
-echo $! >tmp/air.pid
-echo "Watching..."
+air

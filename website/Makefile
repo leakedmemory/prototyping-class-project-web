@@ -23,7 +23,9 @@ clean:
 	@rm -f $(BIN)
 
 watch:
-	@./scripts/watch.sh
+	@mkdir -p tmp
+	@bash -c "./scripts/watch.sh > tmp/air.log 2>&1 &"
+	@echo "Watching..."
 
 shutdown:
 	@./scripts/shutdown.sh
