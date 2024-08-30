@@ -18,8 +18,15 @@ func RegisterRoutes(database *db.DB) http.Handler {
 	apiHandler := handlers.NewHandler(database)
 
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
-	mux.Handle("/user/signup", templ.Handler(template.UserSignUp()))
-	mux.HandleFunc("/user", apiHandler.RegisterUserHandler)
+
+	mux.HandleFunc("/", apiHandler.Root)
+	mux.Handle("/home", handlers.IsAuthenticated(templ.Handler(template.Home())))
+	mux.Handle("/signup", templ.Handler(template.UserSignUp()))
+	mux.Handle("/login", templ.Handler(template.UserLogin()))
+
+	mux.HandleFunc("/user/signup", apiHandler.UserSignUpHandler)
+	mux.HandleFunc("/user/login", apiHandler.UserLoginHandler)
+	mux.HandleFunc("/user/logout", apiHandler.UserLogoutHandler)
 
 	return mux
 }

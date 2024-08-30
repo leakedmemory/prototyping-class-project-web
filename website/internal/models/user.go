@@ -6,5 +6,14 @@ type User struct {
 	Email    string `json:"email"`
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
-	PetCount uint   `json:"pet_count"`
+	Pets     []Pet  `json:"pets"`
+}
+
+type Pet struct {
+	ID      string `json:"id"`
+	LeashID string `json:"leash_id"`
+	Name    string `json:"name"`
+	Age     uint   `json:"age"`
+	Type    string `json:"type"`
+	Breed   string `json:"breed"`
 }

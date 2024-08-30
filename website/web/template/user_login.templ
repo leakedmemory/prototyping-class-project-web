@@ -1,8 +1,8 @@
 package template
 
-templ UserSignUp() {
+templ UserLogin() {
 	@doctype() {
-		@head("Cadastro") {
+		@head("Login") {
 			<style>
         main {
           display: flex;
@@ -16,17 +16,8 @@ templ UserSignUp() {
 		}
 		@body() {
 			<main class="container">
-				<form hx-post="/user/signup">
+				<form hx-post="/user/login">
 					<fieldset>
-						<label>
-							Nome:
-							<input
-								name="name"
-								type="text"
-								placeholder="Insira seu nome"
-								required
-							/>
-						</label>
 						<label>
 							Email:
 							<input
@@ -37,28 +28,19 @@ templ UserSignUp() {
 							/>
 						</label>
 						<label>
-							Telefone:
-							<input
-								name="phone"
-								type="tel"
-								placeholder="Insira seu telefone para contato"
-								required
-							/>
-						</label>
-						<label>
 							Senha:
 							<input
 								name="password"
 								type="password"
-								placeholder="Insira a senha desejada"
+								placeholder="Insira sua senha"
 								required
 							/>
 						</label>
 					</fieldset>
-					<input type="submit" value="Cadastrar"/>
+					<input type="submit" value="Entrar"/>
 				</form>
 				<p>
-					Já possui uma conta? <a href="/login">Fazer login</a>
+					Ainda não possui uma conta? <a href="/signup">Criar conta</a>
 				</p>
 			</main>
 		}
