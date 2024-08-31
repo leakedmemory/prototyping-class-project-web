@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type User struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
@@ -10,10 +12,10 @@ type User struct {
 }
 
 type Pet struct {
-	ID      string `json:"id"`
-	LeashID string `json:"leash_id"`
-	Name    string `json:"name"`
-	Age     uint   `json:"age"`
-	Type    string `json:"type"`
-	Breed   string `json:"breed"`
+	ID          string    `json:"id"`
+	LeashID     string    `json:"leash_id"`
+	Name        string    `json:"name"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	Type        string    `json:"type"`
+	Breed       string    `json:"breed"`
 }

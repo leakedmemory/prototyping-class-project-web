@@ -8,7 +8,7 @@ import (
 
 func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "only POST method is allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -32,7 +32,7 @@ func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	session, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
 		http.Error(w, "Failed to create session", http.StatusInternalServerError)
 		return
@@ -63,7 +63,7 @@ func (h *Handler) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	session, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
 		http.Error(w, "Failed to create session", http.StatusInternalServerError)
 		return
@@ -81,7 +81,7 @@ func (h *Handler) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
 		http.Error(w, "Failed to get session", http.StatusInternalServerError)
 		return
@@ -95,4 +95,7 @@ func (h *Handler) UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/login", http.StatusFound)
+}
+
+func getLoggedUserID(w http.ResponseWriter, r *http.Request) {
 }

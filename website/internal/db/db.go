@@ -139,3 +139,18 @@ func (db *DB) DeleteUser(id string) error {
 	delete(db.userData, id)
 	return db.writeUserData()
 }
+
+func (db *DB) AddPet(pet *models.Pet, ownerID string) error {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
+	user, ok := db.userData[ownerID]
+	if !ok {
+		return errors.New("user not found")
+	}
+
+	user.Pets = append(user.Pets, *pet)
+	db.userData[ownerID] = user
+
+	return db.writeUserData()
+}
