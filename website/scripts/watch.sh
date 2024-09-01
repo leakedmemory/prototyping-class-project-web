@@ -25,7 +25,7 @@ declare -A needed_programs=(
 
 for program in "${!needed_programs[@]}"; do
     if ! program_is_installed $program; then
-        ask_to_install_program_or_exit $program $repo
+        ask_to_install_program_or_exit $program ${needed_programs[$program]}
     fi
 done
 
