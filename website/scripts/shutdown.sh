@@ -6,4 +6,5 @@ if [ -n "$air_pids" ]; then
     kill $air_pids
 else
     echo "No running server was found"
+    echo "Skipping shutdown..."
 fi
