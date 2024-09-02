@@ -1,0 +1,61 @@
+package template
+
+import (
+	"fmt"
+	"strconv"
+	"time"
+	"website/internal/models"
+)
+
+templ PetList(data UserData) {
+	<div class="container pet-list">
+		<div class="pet-header-line">
+			<span class="pet-num">PETS ({ strconv.FormatInt(int64(len(data.Pets)), 10) })</span>
+			<image
+				id="show-pet-modal"
+				class="show-pet-modal"
+				src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_add-256.png"
+				alt="Ícone de círculo com um vazado de símbolo de adição"
+			></image>
+		</div>
+		<div class="container pets-container">
+			<div class="pets">
+				for _, pet := range data.Pets {
+					@petData(&pet)
+				}
+			</div>
+		</div>
+	</div>
+}
+
+templ petData(pet *models.Pet) {
+	<div class="pet">
+		@petDataContainer(fmt.Sprintf("Nome: %s", pet.Name))
+		if dateDiffInYears(pet.DateOfBirth) > 0 {
+			@petDataContainer(fmt.Sprintf("Idade: %s anos", strconv.FormatInt(dateDiffInYears(pet.DateOfBirth), 10)))
+		} else {
+			@petDataContainer(fmt.Sprintf("Idade: %s meses", strconv.FormatInt(dateDiffInMonths(pet.DateOfBirth), 10)))
+		}
+		@petDataContainer(fmt.Sprintf("Tipo: %s", pet.Type))
+		@petDataContainer(fmt.Sprintf("Raça: %s", pet.Breed))
+	</div>
+}
+
+func dateDiffInYears(date time.Time) int64 {
+	return int64(time.Now().Sub(date).Hours() / 24 / 365)
+}
+
+func dateDiffInMonths(date time.Time) int64 {
+	return int64(time.Now().Sub(date).Hours() / 24 / 30)
+}
+
+templ petDataContainer(data string) {
+	<div class="pet-data-container">
+		<image
+			class="pet-data-icon"
+			src="https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paw-print-light-256.png"
+			alt="Ícone em formato de pata de cachorro"
+		></image>
+		<span class="pet-data">{ data }</span>
+	</div>
+}

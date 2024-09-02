@@ -1,0 +1,25 @@
+package template
+
+import "website/internal/models"
+
+type UserData struct {
+	Name  string
+	Email string
+	Phone string
+	Pets  []models.Pet
+}
+
+templ UserCard(data UserData) {
+	<div class="container user">
+		<image
+			class="user-icon"
+			src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_user2-256.png"
+			alt="Ícone de usuário"
+		></image>
+		<div class="user-credentials">
+			<span>Nome: { data.Name }</span>
+			<span>Email: { data.Email }</span>
+			<span>Telefone: { data.Phone }</span>
+		</div>
+	</div>
+}
