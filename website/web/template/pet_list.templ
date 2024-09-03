@@ -7,37 +7,105 @@ import (
 	"website/internal/models"
 )
 
-templ PetList(data UserData) {
-	<div class="container pet-list">
-		<div class="pet-header-line">
-			<span class="pet-num">PETS ({ strconv.FormatInt(int64(len(data.Pets)), 10) })</span>
+templ PetListHeader(data *UserData) {
+	<div class="pet-list-header">
+		<span class="pet-num">PETS ({ strconv.FormatInt(int64(len(data.Pets)), 10) })</span>
+		<button class="show-add-pet-modal-button">
 			<image
-				id="show-pet-modal"
-				class="show-pet-modal"
+				id="show-add-pet-modal"
+				class="show-add-pet-modal-icon"
 				src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_add-256.png"
 				alt="Ícone de círculo com um vazado de símbolo de adição"
 			></image>
-		</div>
-		<div class="container pets-container">
-			<div class="pets">
-				for _, pet := range data.Pets {
-					@petData(&pet)
-				}
-			</div>
+		</button>
+	</div>
+}
+
+templ addPetModal() {
+	<dialog id="add-pet-modal">
+		<article>
+			<h2>Adicionar Pet</h2>
+			<form id="pet-form" hx-post="/pet/create" hx-target=".pet-list" hx-swap="outerHTML">
+				<label>
+					Nome:
+					<input
+						name="name"
+						type="text"
+						placeholder="Insira o nome do pet"
+						required
+					/>
+				</label>
+				<label>
+					Data de nascimento:
+					<input
+						name="date-of-birth"
+						type="date"
+						required
+					/>
+				</label>
+				<label>
+					Tipo:
+					<input
+						name="type"
+						type="text"
+						placeholder="Gato, Cachorro"
+						required
+					/>
+				</label>
+				<label>
+					Raça:
+					<input
+						name="breed"
+						type="text"
+						placeholder="Insira a raça do pet"
+						required
+					/>
+				</label>
+			</form>
+			<footer>
+				<button id="add-pet-cancel" class="secondary">Cancelar</button>
+				<button
+					id="add-pet-confirm"
+					type="submit"
+					form="pet-form"
+					style="width: auto; margin-bottom: 0;"
+				>Adicionar</button>
+			</footer>
+		</article>
+	</dialog>
+}
+
+templ PetList(data *UserData) {
+	<div class="pets-container">
+		<div class="pets">
+			for _, pet := range data.Pets {
+				@petCard(&pet)
+			}
 		</div>
 	</div>
 }
 
-templ petData(pet *models.Pet) {
-	<div class="pet">
-		@petDataContainer(fmt.Sprintf("Nome: %s", pet.Name))
-		if dateDiffInYears(pet.DateOfBirth) > 0 {
-			@petDataContainer(fmt.Sprintf("Idade: %s anos", strconv.FormatInt(dateDiffInYears(pet.DateOfBirth), 10)))
-		} else {
-			@petDataContainer(fmt.Sprintf("Idade: %s meses", strconv.FormatInt(dateDiffInMonths(pet.DateOfBirth), 10)))
-		}
-		@petDataContainer(fmt.Sprintf("Tipo: %s", pet.Type))
-		@petDataContainer(fmt.Sprintf("Raça: %s", pet.Breed))
+templ petCard(pet *models.Pet) {
+	<div class="pet-card">
+		<div class="pet-card-data-column">
+			@petCardData(fmt.Sprintf("Nome: %s", pet.Name))
+			if dateDiffInYears(pet.DateOfBirth) > 0 {
+				@petCardData(fmt.Sprintf("Idade: %s anos", strconv.FormatInt(dateDiffInYears(pet.DateOfBirth), 10)))
+			} else {
+				@petCardData(fmt.Sprintf("Idade: %s meses", strconv.FormatInt(dateDiffInMonths(pet.DateOfBirth), 10)))
+			}
+			@petCardData(fmt.Sprintf("Tipo: %s", pet.Type))
+			@petCardData(fmt.Sprintf("Raça: %s", pet.Breed))
+		</div>
+		<div class="pet-card-delete-column">
+			<image
+				id="show-delete-pet-modal"
+				class="pet-card-delete-icon"
+				src="https://cdn0.iconfinder.com/data/icons/user-interface-2063/24/UI_Essential_icon_expanded-02-256.png"
+				alt="Ícone vermelho em formato de círculo com um X no centro"
+				petname={ pet.Name }
+			></image>
+		</div>
 	</div>
 }
 
@@ -49,13 +117,34 @@ func dateDiffInMonths(date time.Time) int64 {
 	return int64(time.Now().Sub(date).Hours() / 24 / 30)
 }
 
-templ petDataContainer(data string) {
-	<div class="pet-data-container">
+templ petCardData(data string) {
+	<div class="pet-card-data-container">
 		<image
-			class="pet-data-icon"
-			src="https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paw-print-light-256.png"
-			alt="Ícone em formato de pata de cachorro"
+			class="pet-card-icon"
+			src="https://cdn1.iconfinder.com/data/icons/animals-95/300/cat-circle-animal-pet-wild-domestic-256.png"
+			alt="Ícone de um gato dentro de um círculo"
 		></image>
-		<span class="pet-data">{ data }</span>
+		<span class="pet-card-data">{ data }</span>
 	</div>
+}
+
+templ deletePetModal() {
+	<dialog id="delete-pet-modal">
+		<article>
+			<h2>Deletar Pet</h2>
+			<p>
+				Tem certeza que deseja deletar 
+				<strong>
+					<span id="delete-pet-modal-petname"></span>
+				</strong>?
+			</p>
+			<footer>
+				<button
+					id="delete-pet-confirm"
+					class="outline delete-pet-confirm"
+				>Sim, deletar</button>
+				<button id="delete-pet-cancel">Não, cancelar</button>
+			</footer>
+		</article>
+	</dialog>
 }

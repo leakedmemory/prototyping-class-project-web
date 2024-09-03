@@ -9,7 +9,7 @@ type UserData struct {
 	Pets  []models.Pet
 }
 
-templ UserCard(data UserData) {
+templ UserCard(data *UserData) {
 	<div class="container user">
 		<image
 			class="user-icon"

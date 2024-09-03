@@ -6,63 +6,16 @@ templ Home(data UserData) {
 			<link rel="stylesheet" href="/static/css/home.css"/>
 			<link rel="stylesheet" href="/static/css/pet_list.css"/>
 			<link rel="stylesheet" href="/static/css/user_card.css"/>
-			<script type="module" src="/static/js/home.js"></script>
+			<script type="module" src="/static/js/pet_list.js"></script>
 		}
 		@body() {
 			<main>
-				@UserCard(data)
-				@PetList(data)
+				@UserCard(&data)
+				@PetListHeader(&data)
+				@PetList(&data)
 			</main>
 			@addPetModal()
+			@deletePetModal()
 		}
 	}
-}
-
-templ addPetModal() {
-	<dialog id="add-pet-modal">
-		<article>
-			<h2>Adicionar Pet</h2>
-			<form id="pet-form" hx-post="/pet/create" hx-target=".pet-list" hx-swap="outerHTML">
-				<label>
-					Nome:
-					<input
-						name="name"
-						type="text"
-						placeholder="Insira o nome do pet"
-						required
-					/>
-				</label>
-				<label>
-					Data de nascimento:
-					<input
-						name="date-of-birth"
-						type="date"
-						required
-					/>
-				</label>
-				<label>
-					Tipo:
-					<input
-						name="type"
-						type="text"
-						placeholder="Gato, Cachorro"
-						required
-					/>
-				</label>
-				<label>
-					Raça:
-					<input
-						name="breed"
-						type="text"
-						placeholder="Insira a raça do pet"
-						required
-					/>
-				</label>
-			</form>
-			<footer>
-				<button id="cancel" class="secondary">Cancelar</button>
-				<button id="add-pet" type="submit" form="pet-form" style="width: auto; margin-bottom: 0;">Adicionar</button>
-			</footer>
-		</article>
-	</dialog>
 }

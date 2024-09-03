@@ -48,7 +48,7 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, _ := h.database.GetUserByID(userID)
 
-	template.PetList(template.UserData{
+	template.PetList(&template.UserData{
 		Pets: user.Pets,
 	}).Render(r.Context(), w)
 }

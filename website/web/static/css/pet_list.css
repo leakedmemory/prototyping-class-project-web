@@ -3,7 +3,7 @@
   flex-direction: column;
 }
 
-.pet-header-line {
+.pet-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,8 +14,14 @@
   font-weight: bold;
 }
 
-.show-pet-modal {
-  width: 1.3em;
+.show-add-pet-modal-button {
+  background-color: var(--pico-primary-inverse);
+  border: none;
+  padding: 0;
+}
+
+.show-add-pet-modal-icon {
+  width: 1.4em;
   cursor: pointer;
 }
 
@@ -32,27 +38,46 @@
   overflow: visible;
 }
 
-.pet {
+.pet-card {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   padding: 5px;
-  line-height: 25px;
+  line-height: 30px;
   border-style: solid;
   border-radius: 10px;
   border-width: 1px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.pet-data-container {
+.pet-card-data-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-card-delete-column {
+  padding-right: 10px;
+}
+
+.pet-card-delete-icon {
+  width: 1em;
+  cursor: pointer;
+}
+
+.pet-card-icon {
+  width: 1.2em;
+}
+
+.pet-card-data-container {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.pet-data-icon {
-  width: 1em;
+.pet-card-data {
+  padding-left: 5px;
 }
 
-.pet-data {
-  padding-left: 5px;
+.delete-pet-confirm {
+  color: var(--pico-del-color);
+  border-color: var(--pico-del-color);
 }
