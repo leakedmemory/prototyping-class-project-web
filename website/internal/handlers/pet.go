@@ -52,3 +52,26 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 		Pets: user.Pets,
 	}).Render(r.Context(), w)
 }
+
+func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method now allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	session, _ := store.Get(r, "e-leash-session")
+	ownerID, ok := session.Values["userID"].(string)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	petID := r.PathValue("id")
+	err := h.database.DeletePet(ownerID, petID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}

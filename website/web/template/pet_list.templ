@@ -102,8 +102,11 @@ templ petCard(pet *models.Pet) {
 				id="show-delete-pet-modal"
 				class="pet-card-delete-icon"
 				src="https://cdn0.iconfinder.com/data/icons/user-interface-2063/24/UI_Essential_icon_expanded-02-256.png"
-				alt="Ícone vermelho em formato de círculo com um X no centro"
-				petname={ pet.Name }
+				alt="Ícone em formato de X"
+				hx-post={ "/pet/delete/" + pet.ID }
+				hx-target="closest .pet-card"
+				hx-swap="outerHTML"
+				hx-confirm={ "Tem certeza que deseja deletar " + pet.Name + "?" }
 			></image>
 		</div>
 	</div>
@@ -126,25 +129,4 @@ templ petCardData(data string) {
 		></image>
 		<span class="pet-card-data">{ data }</span>
 	</div>
-}
-
-templ deletePetModal() {
-	<dialog id="delete-pet-modal">
-		<article>
-			<h2>Deletar Pet</h2>
-			<p>
-				Tem certeza que deseja deletar 
-				<strong>
-					<span id="delete-pet-modal-petname"></span>
-				</strong>?
-			</p>
-			<footer>
-				<button
-					id="delete-pet-confirm"
-					class="outline delete-pet-confirm"
-				>Sim, deletar</button>
-				<button id="delete-pet-cancel">Não, cancelar</button>
-			</footer>
-		</article>
-	</dialog>
 }

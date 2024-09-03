@@ -29,6 +29,7 @@ func RegisterRoutes(database *db.DB) http.Handler {
 	mux.HandleFunc("/user/logout", apiHandler.UserLogoutHandler)
 
 	mux.HandleFunc("/pet/create", apiHandler.AddPetHandler)
+	mux.HandleFunc("/pet/delete/{id}", apiHandler.DeletePetHandler)
 
 	return mux
 }

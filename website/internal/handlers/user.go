@@ -96,6 +96,3 @@ func (h *Handler) UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/login", http.StatusFound)
 }
-
-func getLoggedUserID(w http.ResponseWriter, r *http.Request) {
-}

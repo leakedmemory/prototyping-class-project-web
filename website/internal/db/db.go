@@ -154,3 +154,23 @@ func (db *DB) AddPet(pet *models.Pet, ownerID string) error {
 
 	return db.writeUserData()
 }
+
+func (db *DB) DeletePet(ownerID, petID string) error {
+	db.mutex.Lock()
+	defer db.mutex.Unlock()
+
+	user, ok := db.userData[ownerID]
+	if !ok {
+		return errors.New("user not found")
+	}
+
+	for i, pet := range user.Pets {
+		if pet.ID == petID {
+			user.Pets = append(user.Pets[:i], user.Pets[i+1:]...)
+			db.userData[ownerID] = user
+			return db.writeUserData()
+		}
+	}
+
+	return errors.New("pet not found")
+}
