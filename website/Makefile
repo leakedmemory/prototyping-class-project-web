@@ -1,7 +1,7 @@
 MAIN := cmd/api/main.go
 BIN := website
 
-.PHONY: all build run test clean watch shutdown restart
+.PHONY: all build run test clean watch
 
 all: build
 
@@ -24,13 +24,4 @@ clean:
 
 watch:
 	@mkdir -p tmp
-	@bash -c "./scripts/watch.sh > tmp/air.log 2>&1 &"
-	@echo "Watching..."
-
-shutdown:
-	@./scripts/shutdown.sh
-
-restart:
-	@./scripts/shutdown.sh
-	@bash -c "./scripts/watch.sh > tmp/air.log 2>&1 &"
-	@echo "Watching..."
+	@./scripts/watch.sh
