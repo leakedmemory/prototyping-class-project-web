@@ -61,6 +61,7 @@ func (h *Handler) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := h.database.GetUserByEmailAndPassword(email, password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	session, err := store.Get(r, "e-leash-session")
