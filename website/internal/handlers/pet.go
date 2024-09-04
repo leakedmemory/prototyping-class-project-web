@@ -10,7 +10,7 @@ import (
 
 func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method now allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -48,14 +48,12 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, _ := h.database.GetUserByID(userID)
 
-	template.PetList(&template.UserData{
-		Pets: user.Pets,
-	}).Render(r.Context(), w)
+	template.PetList(user.Pets).Render(r.Context(), w)
 }
 
 func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method now allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -73,5 +71,11 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	owner, err := h.database.GetUserByID(ownerID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	template.PetList(owner.Pets).Render(r.Context(), w)
 }

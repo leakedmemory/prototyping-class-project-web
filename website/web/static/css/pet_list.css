@@ -8,6 +8,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  width: 100%;
 }
 
 .pet-num {
@@ -26,8 +27,9 @@
 }
 
 .pets-container {
-  max-height: 400px;
-  overflow-y: auto;
+  max-height: 370px;
+  overflow-y: scroll;
+  scrollbar-width: none;
   padding-bottom: 10px;
 }
 

@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-var sessionStore = make(map[string]string)
-
 func generateID() string {
 	timestamp := time.Now().UnixNano()
 

@@ -10,9 +10,8 @@ templ Home(data UserData) {
 		}
 		@body() {
 			<main>
-				@UserCard(&data)
-				@PetListHeader(&data)
-				@PetList(&data)
+				@userCard(&data)
+				@PetList(data.Pets)
 			</main>
 			@addPetModal()
 		}

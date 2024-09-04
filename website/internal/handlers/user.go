@@ -8,7 +8,7 @@ import (
 
 func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -81,6 +81,11 @@ func (h *Handler) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
 		http.Error(w, "Failed to get session", http.StatusInternalServerError)

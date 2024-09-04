@@ -81,7 +81,7 @@ func (db *DB) AddUser(user *models.User) error {
 	defer db.mutex.Unlock()
 
 	if _, exists := db.userData[user.ID]; exists {
-		return errors.New("user with this ID already exists")
+		return errors.New("User with this ID already exists")
 	}
 
 	db.userData[user.ID] = *user
@@ -96,7 +96,7 @@ func (db *DB) GetUserByID(id string) (*models.User, error) {
 	if exists {
 		return &user, nil
 	} else {
-		return nil, errors.New("user not found")
+		return nil, errors.New("User not found")
 	}
 }
 
@@ -105,15 +105,19 @@ func (db *DB) GetUserByEmailAndPassword(email, password string) (*models.User, e
 	defer db.mutex.RUnlock()
 
 	for _, user := range db.userData {
-		if user.Email == email {
-			if user.Password == password {
-				return &user, nil
-			}
-			return nil, errors.New("incorrect password")
+		emailAndPasswordMatch := user.Email == email && user.Password == password
+		eitherEmailOrPassswordMatch :=
+			(user.Email == email && user.Password != password) ||
+				(user.Email != email && user.Password == password)
+
+		if emailAndPasswordMatch {
+			return &user, nil
+		} else if eitherEmailOrPassswordMatch {
+			return nil, errors.New("Incorrect credentials")
 		}
 	}
 
-	return nil, errors.New("user not found")
+	return nil, errors.New("User not found")
 }
 
 func (db *DB) UpdateUser(user *models.User) error {
@@ -121,7 +125,7 @@ func (db *DB) UpdateUser(user *models.User) error {
 	defer db.mutex.Unlock()
 
 	if _, exists := db.userData[user.ID]; !exists {
-		return errors.New("user not found")
+		return errors.New("User not found")
 	}
 
 	db.userData[user.ID] = *user
@@ -133,7 +137,7 @@ func (db *DB) DeleteUser(id string) error {
 	defer db.mutex.Unlock()
 
 	if _, exists := db.userData[id]; !exists {
-		return errors.New("user not found")
+		return errors.New("User not found")
 	}
 
 	delete(db.userData, id)
@@ -146,7 +150,7 @@ func (db *DB) AddPet(pet *models.Pet, ownerID string) error {
 
 	user, ok := db.userData[ownerID]
 	if !ok {
-		return errors.New("user not found")
+		return errors.New("User not found")
 	}
 
 	user.Pets = append(user.Pets, *pet)
@@ -161,7 +165,7 @@ func (db *DB) DeletePet(ownerID, petID string) error {
 
 	user, ok := db.userData[ownerID]
 	if !ok {
-		return errors.New("user not found")
+		return errors.New("User not found")
 	}
 
 	for i, pet := range user.Pets {
@@ -172,5 +176,5 @@ func (db *DB) DeletePet(ownerID, petID string) error {
 		}
 	}
 
-	return errors.New("pet not found")
+	return errors.New("Pet not found")
 }

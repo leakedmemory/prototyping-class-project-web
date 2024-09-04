@@ -47,7 +47,7 @@ func (h *Handler) HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.database.GetUserByID(userID)
 	if err != nil {
-		http.Error(w, "Failed to fetch user data", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

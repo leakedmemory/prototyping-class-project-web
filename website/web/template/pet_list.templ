@@ -1,23 +1,34 @@
 package template
 
 import (
-	"fmt"
 	"strconv"
-	"time"
 	"website/internal/models"
 )
 
-templ PetListHeader(data *UserData) {
+templ petListHeader(petsLen int) {
 	<div class="pet-list-header">
-		<span class="pet-num">PETS ({ strconv.FormatInt(int64(len(data.Pets)), 10) })</span>
+		<span class="pet-num">PETS ({ strconv.FormatInt(int64(petsLen), 10) })</span>
 		<button class="show-add-pet-modal-button">
 			<image
 				id="show-add-pet-modal"
 				class="show-add-pet-modal-icon"
-				src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_add-256.png"
-				alt="Ícone de círculo com um vazado de símbolo de adição"
+				src="static/assets/add_pet_modal_icon_256.webp"
+				alt="Ícone de um círculo com símbolo de adição vazado"
 			></image>
 		</button>
+	</div>
+}
+
+templ PetList(pets []models.Pet) {
+	<div class="pet-list">
+		@petListHeader(len(pets))
+		<div class="pets-container">
+			<div class="pets">
+				for _, pet := range pets {
+					@petCard(&pet)
+				}
+			</div>
+		</div>
 	</div>
 }
 
@@ -73,60 +84,4 @@ templ addPetModal() {
 			</footer>
 		</article>
 	</dialog>
-}
-
-templ PetList(data *UserData) {
-	<div class="pets-container">
-		<div class="pets">
-			for _, pet := range data.Pets {
-				@petCard(&pet)
-			}
-		</div>
-	</div>
-}
-
-templ petCard(pet *models.Pet) {
-	<div class="pet-card">
-		<div class="pet-card-data-column">
-			@petCardData(fmt.Sprintf("Nome: %s", pet.Name))
-			if dateDiffInYears(pet.DateOfBirth) > 0 {
-				@petCardData(fmt.Sprintf("Idade: %s anos", strconv.FormatInt(dateDiffInYears(pet.DateOfBirth), 10)))
-			} else {
-				@petCardData(fmt.Sprintf("Idade: %s meses", strconv.FormatInt(dateDiffInMonths(pet.DateOfBirth), 10)))
-			}
-			@petCardData(fmt.Sprintf("Tipo: %s", pet.Type))
-			@petCardData(fmt.Sprintf("Raça: %s", pet.Breed))
-		</div>
-		<div class="pet-card-delete-column">
-			<image
-				id="show-delete-pet-modal"
-				class="pet-card-delete-icon"
-				src="https://cdn0.iconfinder.com/data/icons/user-interface-2063/24/UI_Essential_icon_expanded-02-256.png"
-				alt="Ícone em formato de X"
-				hx-post={ "/pet/delete/" + pet.ID }
-				hx-target="closest .pet-card"
-				hx-swap="outerHTML"
-				hx-confirm={ "Tem certeza que deseja deletar " + pet.Name + "?" }
-			></image>
-		</div>
-	</div>
-}
-
-func dateDiffInYears(date time.Time) int64 {
-	return int64(time.Now().Sub(date).Hours() / 24 / 365)
-}
-
-func dateDiffInMonths(date time.Time) int64 {
-	return int64(time.Now().Sub(date).Hours() / 24 / 30)
-}
-
-templ petCardData(data string) {
-	<div class="pet-card-data-container">
-		<image
-			class="pet-card-icon"
-			src="https://cdn1.iconfinder.com/data/icons/animals-95/300/cat-circle-animal-pet-wild-domestic-256.png"
-			alt="Ícone de um gato dentro de um círculo"
-		></image>
-		<span class="pet-card-data">{ data }</span>
-	</div>
 }
