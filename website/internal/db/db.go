@@ -76,15 +76,21 @@ func (db *DB) writeUserData() error {
 	return err
 }
 
-func (db *DB) AddUser(user *models.User) error {
+func (db *DB) AddUser(newUser *models.User) error {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
 
-	if _, exists := db.userData[user.ID]; exists {
-		return errors.New("User with this ID already exists")
+	for _, user := range db.userData {
+		if user.Email == newUser.Email {
+			return errors.New("User with this email already exists")
+		}
+
+		if user.ID == newUser.ID {
+			return errors.New("User with this ID already exists")
+		}
 	}
 
-	db.userData[user.ID] = *user
+	db.userData[newUser.ID] = *newUser
 	return db.writeUserData()
 }
 

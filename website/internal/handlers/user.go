@@ -30,6 +30,7 @@ func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 	err := h.database.AddUser(newUser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	session, err := store.Get(r, "e-leash-session")
