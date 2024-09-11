@@ -1,0 +1,15 @@
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#error-message {
+  color: var(--pico-form-element-invalid-active-border-color);
+  visibility: hidden;
+  display: none;
+  padding-bottom: 10px;
+  text-align: center;
+}

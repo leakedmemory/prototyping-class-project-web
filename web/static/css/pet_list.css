@@ -1,0 +1,85 @@
+.pet-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.pet-num {
+  font-weight: bold;
+}
+
+.show-add-pet-modal-button {
+  background-color: var(--pico-primary-inverse);
+  border: none;
+  padding: 0;
+}
+
+.show-add-pet-modal-icon {
+  width: 1.4em;
+  cursor: pointer;
+}
+
+.pets-container {
+  max-height: 370px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  padding-bottom: 10px;
+}
+
+.pets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: visible;
+}
+
+.pet-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  line-height: 30px;
+  border-style: solid;
+  border-radius: 10px;
+  border-width: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pet-card-data-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-card-delete-column {
+  padding-right: 10px;
+}
+
+.pet-card-delete-icon {
+  width: 1em;
+  cursor: pointer;
+}
+
+.pet-card-icon {
+  width: 1.2em;
+}
+
+.pet-card-data-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.pet-card-data {
+  padding-left: 5px;
+}
+
+.delete-pet-confirm {
+  color: var(--pico-del-color);
+  border-color: var(--pico-del-color);
+}

@@ -1,0 +1,30 @@
+package template
+
+templ doctype() {
+	<!DOCTYPE html>
+	<html lang="pt-BR">
+		{ children... }
+	</html>
+}
+
+templ head(title string) {
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>{ title }</title>
+		<link
+			rel="icon"
+			type="image/png"
+			href="https://icons.iconarchive.com/icons/icons8/windows-8/256/Animals-Cat-Track-icon.png"
+		/>
+		<link rel="stylesheet" href="/static/css/pico.min.css"/>
+		<script type="module" src="/static/js/htmx.min.js"></script>
+		{ children... }
+	</head>
+}
+
+templ body() {
+	<body>
+		{ children... }
+	</body>
+}

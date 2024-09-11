@@ -1,0 +1,55 @@
+package template
+
+import (
+	"fmt"
+	"github.com/leakedmemory/prototyping-class-project-web/internal/models"
+	"strconv"
+	"time"
+)
+
+templ petCard(pet *models.Pet) {
+	<div class="pet-card">
+		<div class="pet-card-data-column">
+			@petCardData(fmt.Sprintf("Nome: %s", pet.Name))
+			if dateDiffInYears(pet.DateOfBirth) > 0 {
+				@petCardData(fmt.Sprintf("Idade: %s anos", strconv.FormatInt(dateDiffInYears(pet.DateOfBirth), 10)))
+			} else {
+				@petCardData(fmt.Sprintf("Idade: %s meses", strconv.FormatInt(dateDiffInMonths(pet.DateOfBirth), 10)))
+			}
+			@petCardData(fmt.Sprintf("Tipo: %s", pet.Type))
+			@petCardData(fmt.Sprintf("Raça: %s", pet.Breed))
+		</div>
+		<div class="pet-card-delete-column">
+			<image
+				id="show-delete-pet-modal"
+				class="pet-card-delete-icon"
+				src="static/assets/delete_pet_card_icon_256.webp"
+				alt="Ícone em formato de X"
+				hx-post={ "/pet/delete/" + pet.ID }
+				hx-target="closest .pet-list"
+				hx-swap="outerHTML"
+				hx-trigger="click"
+				hx-confirm={ "Tem certeza que deseja deletar " + pet.Name + "?" }
+			></image>
+		</div>
+	</div>
+}
+
+func dateDiffInYears(date time.Time) int64 {
+	return int64(time.Now().Sub(date).Hours() / 24 / 365)
+}
+
+func dateDiffInMonths(date time.Time) int64 {
+	return int64(time.Now().Sub(date).Hours() / 24 / 30)
+}
+
+templ petCardData(data string) {
+	<div class="pet-card-data-container">
+		<image
+			class="pet-card-icon"
+			src="static/assets/pet_card_data_icon_256.webp"
+			alt="Ícone de um gato dentro de um círculo"
+		></image>
+		<span class="pet-card-data">{ data }</span>
+	</div>
+}

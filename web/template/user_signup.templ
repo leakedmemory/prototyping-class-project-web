@@ -1,0 +1,61 @@
+package template
+
+templ UserSignUp() {
+	@doctype() {
+		@head("Cadastro") {
+			<link rel="stylesheet" href="/static/css/user_login.css"/>
+			<script type="module" src="/static/js/user_login.js"></script>
+		}
+		@body() {
+			<main class="container">
+				<span id="error-message">
+					O email informado já está em uso
+				</span>
+				<form hx-post="/user/signup">
+					<fieldset>
+						<label>
+							Nome:
+							<input
+								name="name"
+								type="text"
+								placeholder="Insira seu nome"
+								required
+							/>
+						</label>
+						<label>
+							Email:
+							<input
+								name="email"
+								type="email"
+								placeholder="Insira seu email"
+								required
+							/>
+						</label>
+						<label>
+							Telefone:
+							<input
+								name="phone"
+								type="tel"
+								placeholder="Insira seu telefone para contato"
+								required
+							/>
+						</label>
+						<label>
+							Senha:
+							<input
+								name="password"
+								type="password"
+								placeholder="Insira a senha desejada"
+								required
+							/>
+						</label>
+					</fieldset>
+					<input type="submit" value="Cadastrar"/>
+				</form>
+				<p>
+					Já possui uma conta? <a href="/login">Fazer login</a>
+				</p>
+			</main>
+		}
+	}
+}
