@@ -30,8 +30,8 @@ func RegisterRoutes(database *db.DB) http.Handler {
 
 	mux.HandleFunc("/pet/create", apiHandler.AddPetHandler)
 	mux.HandleFunc("/pet/delete/{id}", apiHandler.DeletePetHandler)
+	mux.HandleFunc("/pet/ping", apiHandler.PingHandler)
 
-	// mux.HandleFunc("/pet/ping", apiHandler.PingHandler)
 	mux.HandleFunc("/test/ping", apiHandler.TestPingHandler)
 
 	return mux

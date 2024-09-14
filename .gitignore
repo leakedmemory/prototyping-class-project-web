@@ -26,6 +26,6 @@ tmp/
 .env
 
 # Project build
-website
+main
 *templ.go
 *.db.json

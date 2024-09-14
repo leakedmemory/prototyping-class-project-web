@@ -11,25 +11,11 @@ func (h *Handler) PingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var pingData struct {
-		LeashID string `json:"leash_id"`
-	}
-	err := json.NewDecoder(r.Body).Decode(&pingData)
-	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+	leash_id := r.URL.Query().Get("leash_id")
+	if leash_id == "" {
+		http.Error(w, "Missing 'leash_id' parameter", http.StatusBadRequest)
 		return
 	}
-
-	h.leashMutex.RLock()
-	monitor, exists := h.leashMonitors[pingData.LeashID]
-	h.leashMutex.RUnlock()
-
-	if !exists {
-		http.Error(w, "Unknown leash ID", http.StatusNotFound)
-		return
-	}
-
-	monitor.RecordPing()
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Ping received"})
@@ -43,7 +29,7 @@ func (h *Handler) TestPingHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	_, err := w.Write([]byte("Hello from Go server!"))
+	_, err := w.Write([]byte("Hello from Go server!\n"))
 	if err != nil {
 		panic("pqp")
 	}

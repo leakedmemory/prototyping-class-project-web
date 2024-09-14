@@ -1,19 +1,15 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
-	"os"
-	"sync"
 
 	"github.com/gorilla/sessions"
-	_ "github.com/joho/godotenv/autoload"
 
 	"github.com/leakedmemory/prototyping-class-project-web/internal/db"
 	"github.com/leakedmemory/prototyping-class-project-web/web/template"
 )
 
-var store = sessions.NewCookieStore([]byte(os.Getenv("SESSIONS_COOKIE_KEY")))
+var store = sessions.NewCookieStore([]byte("tYMhbaajY6tTeXNUyRktpnuf2Wq73d31EkHTJAKryRg="))
 
 const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7
 
@@ -28,35 +24,12 @@ func init() {
 }
 
 type Handler struct {
-	database      *db.DB
-	leashMonitors map[string]*LeashMonitor
-	leashMutex    sync.RWMutex
+	database *db.DB
 }
 
 func NewHandler(database *db.DB) *Handler {
-	h := &Handler{
-		database:      database,
-		leashMonitors: make(map[string]*LeashMonitor),
-	}
-	h.initLeashMonitors()
-	return h
-}
-
-func (h *Handler) initLeashMonitors() {
-	users, err := h.database.GetAllUsers()
-	if err != nil {
-		log.Printf("Error fetching users: %v", err)
-		return
-	}
-
-	for _, user := range users {
-		for _, pet := range user.Pets {
-			if pet.LeashID != "" {
-				monitor := NewLeashMonitor(pet.LeashID, pet.Name)
-				h.leashMonitors[pet.LeashID] = monitor
-				go monitor.Monitor()
-			}
-		}
+	return &Handler{
+		database: database,
 	}
 }
 
