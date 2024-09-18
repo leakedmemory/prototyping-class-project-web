@@ -72,12 +72,5 @@ func (h *Handler) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userData := template.UserData{
-		Name:  user.Name,
-		Email: user.Email,
-		Phone: user.Phone,
-		Pets:  user.Pets,
-	}
-
-	template.Home(userData).Render(r.Context(), w)
+	template.Home(user).Render(r.Context(), w)
 }

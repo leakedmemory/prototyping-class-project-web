@@ -2,14 +2,7 @@ package template
 
 import "github.com/leakedmemory/prototyping-class-project/internal/models"
 
-type UserData struct {
-	Name  string
-	Email string
-	Phone string
-	Pets  []models.Pet
-}
-
-templ userCard(data *UserData) {
+templ userCard(user *models.User) {
 	<div class="container user">
 		<image
 			class="user-icon"
@@ -17,9 +10,9 @@ templ userCard(data *UserData) {
 			alt="Ícone de usuário"
 		></image>
 		<div class="user-credentials">
-			<span>Nome: { data.Name }</span>
-			<span>Email: { data.Email }</span>
-			<span>Telefone: { data.Phone }</span>
+			<span>Nome: { user.Name }</span>
+			<span>Email: { user.Email }</span>
+			<span>Telefone: { user.Phone }</span>
 		</div>
 	</div>
 }

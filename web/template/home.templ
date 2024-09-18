@@ -1,6 +1,8 @@
 package template
 
-templ Home(data UserData) {
+import "github.com/leakedmemory/prototyping-class-project/internal/models"
+
+templ Home(user *models.User) {
 	@doctype() {
 		@head("Home") {
 			<link type="text/css" rel="stylesheet" href="/static/css/home.css"/>
@@ -10,8 +12,8 @@ templ Home(data UserData) {
 		}
 		@body() {
 			<main>
-				@userCard(&data)
-				@PetList(data.Pets)
+				@userCard(user)
+				@PetList(user.Pets)
 			</main>
 			@addPetModal()
 		}
