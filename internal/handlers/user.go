@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/leakedmemory/prototyping-class-project/internal/models"
@@ -15,7 +16,7 @@ func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 	userID := generateID()
 	name := r.FormValue("name")
 	email := r.FormValue("email")
-	phone := r.FormValue("phone")
+	phone := fmt.Sprintf("+55%v", r.FormValue("phone"))
 	password := r.FormValue("password")
 
 	newUser := &models.User{

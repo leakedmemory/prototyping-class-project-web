@@ -1,9 +1,11 @@
 package monitors
 
 import (
+	// "fmt"
 	"log"
 	"sync"
 	"time"
+	// "github.com/leakedmemory/prototyping-class-project/internal/notifications"
 )
 
 const (
@@ -71,18 +73,37 @@ func (pm *PetMonitor) Monitor() {
 			}
 
 			if missedPings > pm.missThreshold && pm.isConnected {
-				// TODO: notify owner
 				pm.isConnected = false
 				log.Printf(
 					"Pet %s may have ran away at %v:%v\n",
 					pm.petName, currentTime.Hour(), currentTime.Minute(),
 				)
+
+				// message := fmt.Sprintf(
+				// 	"Alerta: Seu pet %s pode ter fugido às %v:%v",
+				// 	pm.petName, currentTime.Hour(), currentTime.Minute(),
+				// )
+				//
+				// err := notifications.SendSMS(pm.ownerPhone, message)
+				// if err != nil {
+				// 	log.Printf("Failed to send SMS: %v", err)
+				// }
 			} else if missedPings <= pm.missThreshold && !pm.isConnected {
 				pm.isConnected = true
 				log.Printf(
 					"Pet %s reconnected at %v:%v\n",
 					pm.petName, currentTime.Hour(), currentTime.Minute(),
 				)
+
+				// message := fmt.Sprintf(
+				// 	"Boas notícias: Seu pet %s se reconectou às %v:%v",
+				// 	pm.petName, currentTime.Hour(), currentTime.Minute(),
+				// )
+				//
+				// err := notifications.SendSMS(pm.ownerPhone, message)
+				// if err != nil {
+				// 	log.Printf("Failed to send SMS: %v", err)
+				// }
 			}
 		}
 
