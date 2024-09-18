@@ -201,3 +201,18 @@ func (db *DB) DeletePet(ownerID, petID string) (*models.Pet, error) {
 
 	return nil, errors.New("Pet not found")
 }
+
+func (db *DB) GetUserByPetLeashID(leashID string) (*models.User, error) {
+	db.mutex.RLock()
+	defer db.mutex.RUnlock()
+
+	for _, user := range db.userData {
+		for _, pet := range user.Pets {
+			if pet.LeashID == leashID {
+				return &user, nil
+			}
+		}
+	}
+
+	return nil, errors.New("Pet's owner not found")
+}

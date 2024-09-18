@@ -1,0 +1,49 @@
+package template
+
+import (
+	"github.com/leakedmemory/prototyping-class-project/internal/models"
+)
+
+templ PetInfo(owner *models.User, pet *models.Pet) {
+	@doctype() {
+		@head("Pet Info") {
+			<link type="text/css" rel="stylesheet" href="/static/css/pet_info.css"/>
+		}
+		@body() {
+			<main>
+				<div class="pet-info-container">
+					<div class="pet-info-wrapper">
+						<div class="owner-info">
+							<div class="photo-wrapper">
+								<image
+									class="owner-photo"
+									src="static/assets/user_icon_256.webp"
+									alt="Imagem de perfil do dono"
+								></image>
+							</div>
+							<div class="credentials">
+								<p>Nome: <span class="credential">{ owner.Name }</span></p>
+								<p>Email: <span class="credential">{ owner.Email }</span></p>
+								<p>Contato: <span class="credential">{ formatContactNumber(owner.Phone) }</span></p>
+							</div>
+						</div>
+						<div class="pet-info">
+							<div class="photo-wrapper">
+								<image
+									class="pet-photo"
+									src="static/assets/user_icon_256.webp"
+									alt="Foto do pet"
+								></image>
+							</div>
+							<div class="credentials">
+								<p>Nome: <span class="credential">{ pet.Name }</span></p>
+								<p>Tipo: <span class="credential">{ pet.Type }</span></p>
+								<p>Raça: <span class="credential">{ pet.Breed }</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+		}
+	}
+}

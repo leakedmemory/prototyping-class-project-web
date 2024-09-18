@@ -92,3 +92,32 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 
 	template.PetList(owner.Pets).Render(r.Context(), w)
 }
+
+func (h *Handler) PetInfoHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	leashID := r.URL.Query().Get("leash_id")
+	if leashID == "" {
+		http.Error(w, "Missing 'leash_id' parameter", http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.database.GetUserByPetLeashID(leashID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var desiredPet *models.Pet
+	for _, pet := range user.Pets {
+		if pet.LeashID == leashID {
+			desiredPet = &pet
+			break
+		}
+	}
+
+	template.PetInfo(user, desiredPet).Render(r.Context(), w)
+}

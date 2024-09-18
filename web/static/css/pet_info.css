@@ -1,0 +1,56 @@
+main {
+  height: 100vh;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+.pet-info-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.pet-info-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-radius: 10px;
+  border-width: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.owner-info {
+  margin-bottom: 30px;
+}
+
+.owner-photo,
+.pet-photo {
+  width: 100px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.photo-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.credentials > p {
+  font-weight: bold;
+}
+
+.credential {
+  font-weight: normal;
+}
+
+.pet-info {
+  min-width: 100%;
+}

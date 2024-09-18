@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/leakedmemory/prototyping-class-project/internal/models"
 	"strconv"
-	"time"
 )
 
 templ petCard(pet *models.Pet) {
@@ -33,14 +32,6 @@ templ petCard(pet *models.Pet) {
 			></image>
 		</div>
 	</div>
-}
-
-func dateDiffInYears(date time.Time) int64 {
-	return int64(time.Now().Sub(date).Hours() / 24 / 365)
-}
-
-func dateDiffInMonths(date time.Time) int64 {
-	return int64(time.Now().Sub(date).Hours() / 24 / 30)
 }
 
 templ petCardData(data string) {
