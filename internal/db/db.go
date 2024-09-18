@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/models"
+	"github.com/leakedmemory/prototyping-class-project/internal/models"
 )
 
 type DB struct {
@@ -126,7 +126,7 @@ func (db *DB) GetUserByEmailAndPassword(email, password string) (*models.User, e
 	return nil, errors.New("User not found")
 }
 
-func (db *DB) GetAllUsers() ([]models.User, error) {
+func (db *DB) GetAllUsers() []models.User {
 	db.mutex.RLock()
 	defer db.mutex.RUnlock()
 
@@ -134,7 +134,7 @@ func (db *DB) GetAllUsers() ([]models.User, error) {
 	for _, user := range db.userData {
 		users = append(users, user)
 	}
-	return users, nil
+	return users
 }
 
 func (db *DB) UpdateUser(user *models.User) error {
@@ -181,22 +181,23 @@ func (db *DB) AddPet(pet *models.Pet, ownerID string) (*models.Pet, error) {
 	return pet, nil
 }
 
-func (db *DB) DeletePet(ownerID, petID string) error {
+func (db *DB) DeletePet(ownerID, petID string) (*models.Pet, error) {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
 
 	user, ok := db.userData[ownerID]
 	if !ok {
-		return errors.New("User not found")
+		return nil, errors.New("User not found")
 	}
 
 	for i, pet := range user.Pets {
 		if pet.ID == petID {
+			deletedPet := user.Pets[i]
 			user.Pets = append(user.Pets[:i], user.Pets[i+1:]...)
 			db.userData[ownerID] = user
-			return db.writeUserData()
+			return &deletedPet, db.writeUserData()
 		}
 	}
 
-	return errors.New("Pet not found")
+	return nil, errors.New("Pet not found")
 }

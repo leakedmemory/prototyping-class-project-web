@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/db"
+	"github.com/leakedmemory/prototyping-class-project/internal/db"
 )
 
 func NewServer(database *db.DB) *http.Server {

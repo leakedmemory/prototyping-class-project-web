@@ -5,9 +5,9 @@ import (
 
 	"github.com/a-h/templ"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/db"
-	"github.com/leakedmemory/prototyping-class-project-web/internal/handlers"
-	"github.com/leakedmemory/prototyping-class-project-web/web/template"
+	"github.com/leakedmemory/prototyping-class-project/internal/db"
+	"github.com/leakedmemory/prototyping-class-project/internal/handlers"
+	"github.com/leakedmemory/prototyping-class-project/web/template"
 )
 
 func RegisterRoutes(database *db.DB) http.Handler {

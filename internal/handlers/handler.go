@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/gorilla/sessions"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/db"
-	"github.com/leakedmemory/prototyping-class-project-web/web/template"
+	"github.com/leakedmemory/prototyping-class-project/internal/db"
+	"github.com/leakedmemory/prototyping-class-project/internal/monitors"
+	"github.com/leakedmemory/prototyping-class-project/web/template"
 )
 
 var store = sessions.NewCookieStore([]byte("tYMhbaajY6tTeXNUyRktpnuf2Wq73d31EkHTJAKryRg="))
@@ -24,13 +26,32 @@ func init() {
 }
 
 type Handler struct {
-	database *db.DB
+	database         *db.DB
+	petMonitors      map[string]*monitors.PetMonitor
+	petMonitorsMutex sync.RWMutex
 }
 
 func NewHandler(database *db.DB) *Handler {
+	pms := initPetMonitors(database)
+
 	return &Handler{
-		database: database,
+		database:    database,
+		petMonitors: pms,
 	}
+}
+
+func initPetMonitors(database *db.DB) map[string]*monitors.PetMonitor {
+	pms := make(map[string]*monitors.PetMonitor)
+	users := database.GetAllUsers()
+	for _, user := range users {
+		for _, pet := range user.Pets {
+			pm := monitors.NewPetMonitor(pet.Name, user.Phone)
+			pms[pet.LeashID] = pm
+			go pm.Monitor()
+		}
+	}
+
+	return pms
 }
 
 func (h *Handler) RootHandler(w http.ResponseWriter, r *http.Request) {

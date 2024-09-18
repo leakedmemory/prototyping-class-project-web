@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/models"
+	"github.com/leakedmemory/prototyping-class-project/internal/models"
 )
 
 func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {

@@ -1,4 +1,4 @@
-module github.com/leakedmemory/prototyping-class-project-web
+module github.com/leakedmemory/prototyping-class-project
 
 go 1.23.0
 

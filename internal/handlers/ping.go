@@ -11,9 +11,19 @@ func (h *Handler) PingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	leash_id := r.URL.Query().Get("leash_id")
-	if leash_id == "" {
+	leashID := r.URL.Query().Get("leash_id")
+	if leashID == "" {
 		http.Error(w, "Missing 'leash_id' parameter", http.StatusBadRequest)
+		return
+	}
+
+	h.petMonitorsMutex.RLock()
+	if pm, ok := h.petMonitors[leashID]; ok {
+		pm.Ping()
+		h.petMonitorsMutex.RUnlock()
+	} else {
+		http.Error(w, "Monitor not found", http.StatusInternalServerError)
+		h.petMonitorsMutex.RUnlock()
 		return
 	}
 
@@ -29,7 +39,7 @@ func (h *Handler) TestPingHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	_, err := w.Write([]byte("Hello from Go server!\n"))
+	_, err := w.Write([]byte("Hello from Go server!"))
 	if err != nil {
 		panic("pqp")
 	}

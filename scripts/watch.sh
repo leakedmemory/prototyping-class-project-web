@@ -29,16 +29,4 @@ for program in "${!needed_programs[@]}"; do
     fi
 done
 
-if [ ! -f ".env" ]; then
-    echo "'.env' file not found"
-    exit 1
-else
-    source .env
-fi
-
-if [[ -z "${PORT}" ]]; then
-    echo "'PORT' environment variable is not set in .env"
-    exit 1
-fi
-
 air

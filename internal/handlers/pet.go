@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/models"
-	"github.com/leakedmemory/prototyping-class-project-web/web/template"
+	"github.com/leakedmemory/prototyping-class-project/internal/models"
+	"github.com/leakedmemory/prototyping-class-project/internal/monitors"
+	"github.com/leakedmemory/prototyping-class-project/web/template"
 )
 
 func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,6 +51,11 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, _ := h.database.GetUserByID(userID)
+	pm := monitors.NewPetMonitor(name, user.Phone)
+
+	h.petMonitorsMutex.Lock()
+	h.petMonitors[leashID] = pm
+	h.petMonitorsMutex.Unlock()
 
 	template.PetList(user.Pets).Render(r.Context(), w)
 }
@@ -68,11 +74,15 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	petID := r.PathValue("id")
-	err := h.database.DeletePet(ownerID, petID)
+	pet, err := h.database.DeletePet(ownerID, petID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	h.petMonitorsMutex.Lock()
+	delete(h.petMonitors, pet.LeashID)
+	h.petMonitorsMutex.Unlock()
 
 	owner, err := h.database.GetUserByID(ownerID)
 	if err != nil {

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/leakedmemory/prototyping-class-project-web/internal/db"
-	"github.com/leakedmemory/prototyping-class-project-web/internal/server"
+	"github.com/leakedmemory/prototyping-class-project/internal/db"
+	"github.com/leakedmemory/prototyping-class-project/internal/server"
 )
 
 func main() {
