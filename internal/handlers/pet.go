@@ -212,3 +212,23 @@ func (h *Handler) PetGetQRCodeHandler(w http.ResponseWriter, r *http.Request) {
 
 	template.PetQRCode(base64Data).Render(r.Context(), w)
 }
+
+func (h *Handler) PetConnectionStatusHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	leashID := r.URL.Query().Get("leash-id")
+	if leashID == "" {
+		http.Error(w, "Missing leash-id parameter", http.StatusBadRequest)
+		return
+	}
+
+	h.petMonitorsMutex.RLock()
+	isConnected := h.petMonitors[leashID].IsConnected()
+	h.petMonitorsMutex.RUnlock()
+
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintf(w, `<div class="status-circle" data-connected="%t"></div>`, isConnected)
+}

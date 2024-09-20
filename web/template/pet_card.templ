@@ -17,7 +17,14 @@ templ PetCard(pet *models.Pet) {
 			@petCardData("Tipo: ", pet.Type)
 			@petCardData("Raça: ", pet.Breed)
 		</div>
-		<div class="pet-card-delete-column">
+		<div class="pet-card-actions-column">
+			<div
+				class="pet-status-indicator"
+				hx-get={ "/pet/connection-status?leash-id=" + pet.LeashID }
+				hx-trigger="every 15s"
+			>
+				<div class="status-circle" data-connected="true"></div>
+			</div>
 			<button
 				class="pet-card-delete-button"
 				hx-delete={ "/pet/delete/" + pet.ID }

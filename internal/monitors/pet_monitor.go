@@ -26,7 +26,7 @@ type PetMonitor struct {
 	pingWindow       time.Duration
 	lastPings        []int8
 	missThreshold    int
-	mutex            sync.RWMutex
+	pingsMutex       sync.RWMutex
 	isBeingMonitored bool
 	isConnected      bool
 	done             chan struct{}
@@ -71,7 +71,7 @@ func (pm *PetMonitor) Monitor() {
 					pm.appendPing(currentTime, missed)
 				}
 
-				pm.mutex.RLock()
+				pm.pingsMutex.RLock()
 				{
 					if len(pm.lastPings) == defaultMaxLastPingCapacity {
 						missedPings := 0
@@ -90,7 +90,7 @@ func (pm *PetMonitor) Monitor() {
 						}
 					}
 				}
-				pm.mutex.RUnlock()
+				pm.pingsMutex.RUnlock()
 			}
 		}
 	}()
@@ -107,8 +107,8 @@ func (pm *PetMonitor) Ping() {
 }
 
 func (pm *PetMonitor) appendPing(t time.Time, status int8) {
-	pm.mutex.Lock()
-	defer pm.mutex.Unlock()
+	pm.pingsMutex.Lock()
+	defer pm.pingsMutex.Unlock()
 
 	if len(pm.lastPings) == defaultMaxLastPingCapacity {
 		pm.lastPings = pm.lastPings[1:]
@@ -157,4 +157,8 @@ func (pm *PetMonitor) notifyReconnect(t time.Time) {
 	// if err != nil {
 	// 	log.Printf("Failed to send SMS: %v", err)
 	// }
+}
+
+func (pm *PetMonitor) IsConnected() bool {
+	return pm.isConnected
 }
