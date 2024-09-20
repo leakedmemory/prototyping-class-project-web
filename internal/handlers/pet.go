@@ -104,7 +104,7 @@ func saveQRCode(env, leashID string, qrCode []byte) (string, error) {
 		qrCodePath = fmt.Sprintf("%s.png", leashID)
 	}
 
-	return "", os.WriteFile(qrCodePath, qrCode, 0644)
+	return qrCodePath, os.WriteFile(qrCodePath, qrCode, 0644)
 }
 
 func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {

@@ -8,6 +8,7 @@ RUN go mod download && go mod verify
 RUN go install github.com/a-h/templ/cmd/templ@latest
 COPY . .
 RUN make build
+RUN mkdir /data
 
 FROM debian:bookworm
 

@@ -1,8 +1,3 @@
-# fly.toml app configuration file generated for prototyping-class-webapp on 2024-09-14T14:41:01-03:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = "prototyping-class-webapp"
 primary_region = "gig"
 
@@ -26,6 +21,10 @@ processes = ["app"]
 [[statics]]
 guest_path = "/usr/local/bin/web/static"
 url_prefix = "/static"
+
+[mounts]
+source = "user_data"
+destination = "/data"
 
 [[vm]]
 memory = "1gb"
