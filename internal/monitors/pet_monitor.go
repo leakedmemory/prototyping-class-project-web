@@ -5,7 +5,7 @@ import (
 	"log"
 	"sync"
 	"time"
-	// "github.com/leakedmemory/prototyping-class-project/internal/notifications"
+	// "github.com/leakedmemory/prototyping-class-project/pkg/notifications"
 )
 
 const (

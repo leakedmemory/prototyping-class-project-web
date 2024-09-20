@@ -1,0 +1,25 @@
+package template
+
+templ PetQRCode(data string) {
+	@doctype() {
+		@head("Pet QR Code") {
+			<style>
+				.pet-qrcode-wrapper {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					height: 100vh;
+				}
+				.pet-qrcode-image {
+					max-width: 80%;
+					max-height: 80%;
+				}
+			</style>
+		}
+		@body() {
+			<div class="pet-qrcode-wrapper">
+				<img class="pet-qrcode-image" src={ "data:image/png;base64," + data } alt="Pet QR Code"/>
+			</div>
+		}
+	}
+}

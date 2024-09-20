@@ -1,12 +1,16 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/leakedmemory/prototyping-class-project/internal/models"
 	"github.com/leakedmemory/prototyping-class-project/internal/monitors"
+	"github.com/leakedmemory/prototyping-class-project/pkg/encoding"
 	"github.com/leakedmemory/prototyping-class-project/web/template"
 )
 
@@ -42,6 +46,24 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	env := os.Getenv("ENV")
+	if env != "local" && env != "prod" {
+		http.Error(w, "Failed to get ENV environment variable", http.StatusInternalServerError)
+		return
+	}
+
+	qrCode, err := encoding.GenerateQRCode(leashID)
+	if err != nil {
+		http.Error(w, "Failed to generate QR Code", http.StatusInternalServerError)
+		return
+	}
+
+	qrCodePath, err := saveQRCode(env, leashID, qrCode)
+	if err != nil {
+		http.Error(w, "Failed to save QR Code", http.StatusInternalServerError)
+		return
+	}
+
 	newPet := &models.Pet{
 		ID:          id,
 		LeashID:     leashID,
@@ -49,6 +71,7 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 		DateOfBirth: dateOfBirth,
 		Type:        petType,
 		Breed:       breed,
+		QRCodePath:  qrCodePath,
 	}
 
 	_, err = h.database.AddPet(newPet, userID)
@@ -71,6 +94,17 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("HX-Trigger", "petAdded")
 
 	template.PetCard(newPet).Render(r.Context(), w)
+}
+
+func saveQRCode(env, leashID string, qrCode []byte) (string, error) {
+	var qrCodePath string
+	if env == "local" {
+		qrCodePath = fmt.Sprintf("tmp/%s.png", leashID)
+	} else if env == "prod" {
+		qrCodePath = fmt.Sprintf("%s.png", leashID)
+	}
+
+	return "", os.WriteFile(qrCodePath, qrCode, 0644)
 }
 
 func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
@@ -101,6 +135,11 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	h.petMonitorsMutex.Unlock()
 
+	if err = os.Remove(pet.QRCodePath); err != nil {
+		http.Error(w, "Could not remove associated QR Code file", http.StatusInternalServerError)
+		return
+	}
+
 	owner, err := h.database.GetUserByID(ownerID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -123,19 +162,53 @@ func (h *Handler) PetInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.database.GetUserByPetLeashID(leashID)
+	owner, err := h.database.GetUserByPetLeashID(leashID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Owner pet not found", http.StatusNotFound)
 		return
 	}
 
-	var desiredPet *models.Pet
-	for _, pet := range user.Pets {
-		if pet.LeashID == leashID {
-			desiredPet = &pet
-			break
-		}
+	pet, err := h.database.GetPetByLeashID(leashID)
+	if err != nil {
+		http.Error(w, "Pet with leash ID not found", http.StatusNotFound)
+		return
 	}
 
-	template.PetInfo(user, desiredPet).Render(r.Context(), w)
+	template.PetInfo(owner, pet).Render(r.Context(), w)
+}
+
+func (h *Handler) PetGetQRCodeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	leashID := r.URL.Query().Get("leash-id")
+	if leashID == "" {
+		http.Error(w, "Missing 'leash-id' parameter", http.StatusBadRequest)
+		return
+	}
+
+	env := os.Getenv("ENV")
+	if env != "local" && env != "prod" {
+		http.Error(w, "Failed to get ENV environment variable", http.StatusInternalServerError)
+		return
+	}
+
+	var qrCodePath string
+	if env == "local" {
+		qrCodePath = fmt.Sprintf("tmp/%s.png", leashID)
+	} else if env == "prod" {
+		qrCodePath = fmt.Sprintf("%s.png", leashID)
+	}
+
+	imageData, err := os.ReadFile(qrCodePath)
+	if err != nil {
+		http.Error(w, "Failed to read QR code image", http.StatusInternalServerError)
+		return
+	}
+
+	base64Data := base64.StdEncoding.EncodeToString(imageData)
+
+	template.PetQRCode(base64Data).Render(r.Context(), w)
 }

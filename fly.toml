@@ -11,7 +11,9 @@ primary_region = "gig"
 GO_VERSION = "1.23.0"
 
 [env]
+DOMAIN = "https://prototyping-class-webapp.fly.dev"
 PORT = "8080"
+ENV = "prod"
 
 [http_service]
 internal_port = 8080

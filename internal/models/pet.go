@@ -9,4 +9,5 @@ type Pet struct {
 	DateOfBirth time.Time `json:"date_of_birth"`
 	Type        string    `json:"type"`
 	Breed       string    `json:"breed"`
+	QRCodePath  string    `json:"qrcode_path"`
 }

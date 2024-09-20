@@ -31,7 +31,8 @@ func RegisterRoutes(database *db.DB) http.Handler {
 	mux.HandleFunc("/pet", apiHandler.PetInfoHandler)
 	mux.HandleFunc("/pet/create", apiHandler.AddPetHandler)
 	mux.HandleFunc("/pet/delete/{id}", apiHandler.DeletePetHandler)
-	mux.HandleFunc("/pet/ping", apiHandler.PingHandler)
+	mux.HandleFunc("/pet/ping", apiHandler.PetPingHandler)
+	mux.HandleFunc("/pet/qrcode", apiHandler.PetGetQRCodeHandler)
 
 	return mux
 }
