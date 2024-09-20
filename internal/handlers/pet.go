@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -18,12 +19,12 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "e-leash-session")
 	userID, ok := session.Values["userID"].(string)
 	if !ok {
-		http.Redirect(w, r, "/login", http.StatusFound)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	id := generateID()
-	leashID := r.FormValue("leashID")
+	leashID := r.FormValue("leash-id")
 	name := r.FormValue("name")
 	dateOfBirthStr := r.FormValue("date-of-birth")
 	petType := r.FormValue("type")
@@ -32,6 +33,12 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 	dateOfBirth, err := time.Parse("2006-01-02", dateOfBirthStr)
 	if err != nil {
 		http.Error(w, "Invalid date format", http.StatusBadRequest)
+		return
+	}
+
+	_, err = h.database.GetPetByLeashID(leashID)
+	if err == nil {
+		http.Error(w, "Pet with this leash_id already exists", http.StatusBadRequest)
 		return
 	}
 
@@ -50,18 +57,24 @@ func (h *Handler) AddPetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, _ := h.database.GetUserByID(userID)
-	pm := monitors.NewPetMonitor(name, user.Phone)
+	owner, _ := h.database.GetUserByID(userID)
+	pm := monitors.NewPetMonitor(name, owner.Phone)
 
 	h.petMonitorsMutex.Lock()
 	h.petMonitors[leashID] = pm
 	h.petMonitorsMutex.Unlock()
 
-	template.PetList(user.Pets).Render(r.Context(), w)
+	pm.Monitor()
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("X-Pet-Count", fmt.Sprintf("%d", len(owner.Pets)))
+	w.Header().Set("HX-Trigger", "petAdded")
+
+	template.PetCard(newPet).Render(r.Context(), w)
 }
 
 func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodDelete {
 		http.Error(w, "HTTP method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -69,7 +82,7 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "e-leash-session")
 	ownerID, ok := session.Values["userID"].(string)
 	if !ok {
-		http.Redirect(w, r, "/login", http.StatusFound)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
@@ -81,7 +94,11 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.petMonitorsMutex.Lock()
-	delete(h.petMonitors, pet.LeashID)
+	{
+		pm := h.petMonitors[pet.LeashID]
+		pm.Stop()
+		delete(h.petMonitors, pet.LeashID)
+	}
 	h.petMonitorsMutex.Unlock()
 
 	owner, err := h.database.GetUserByID(ownerID)
@@ -90,7 +107,8 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template.PetList(owner.Pets).Render(r.Context(), w)
+	w.Header().Set("X-Pet-Count", fmt.Sprintf("%d", len(owner.Pets)))
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) PetInfoHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,9 +117,9 @@ func (h *Handler) PetInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	leashID := r.URL.Query().Get("leash_id")
+	leashID := r.URL.Query().Get("leash-id")
 	if leashID == "" {
-		http.Error(w, "Missing 'leash_id' parameter", http.StatusBadRequest)
+		http.Error(w, "Missing 'leash-id' parameter", http.StatusBadRequest)
 		return
 	}
 

@@ -4,15 +4,26 @@ import "github.com/leakedmemory/prototyping-class-project/internal/models"
 
 templ userCard(user *models.User) {
 	<div class="container user">
-		<image
-			class="user-icon"
-			src="static/assets/user_icon_256.webp"
-			alt="Ícone de usuário"
-		></image>
-		<div class="user-credentials">
-			<span>Nome: { user.Name }</span>
-			<span>Email: { user.Email }</span>
-			<span>Telefone: { user.Phone }</span>
+		<div class="user-icon-wrapper">
+			<image
+				class="user-icon"
+				src="static/assets/user_icon_256.webp"
+				alt="Ícone de usuário"
+			></image>
+		</div>
+		<div class="user-card-credentials">
+			<p>
+				Nome:
+				<span class="user-card-credential">{ user.Name }</span>
+			</p>
+			<p>
+				Email:
+				<span class="user-card-credential">{ user.Email }</span>
+			</p>
+			<p>
+				Contato:
+				<span class="user-card-credential">{ formatContactNumber(user.Phone) }</span>
+			</p>
 		</div>
 	</div>
 }

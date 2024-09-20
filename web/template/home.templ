@@ -7,13 +7,14 @@ templ Home(user *models.User) {
 		@head("Home") {
 			<link type="text/css" rel="stylesheet" href="/static/css/home.css"/>
 			<link type="text/css" rel="stylesheet" href="/static/css/pet_list.css"/>
+			<link type="text/css" rel="stylesheet" href="/static/css/pet_card.css"/>
 			<link type="text/css" rel="stylesheet" href="/static/css/user_card.css"/>
 			<script type="module" src="/static/js/pet_list.js"></script>
 		}
 		@body() {
 			<main>
 				@userCard(user)
-				@PetList(user.Pets)
+				@petList(user.Pets)
 			</main>
 			@addPetModal()
 		}

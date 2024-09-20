@@ -3,12 +3,13 @@ package template
 templ UserSignUp() {
 	@doctype() {
 		@head("Cadastro") {
-			<link type="text/css" rel="stylesheet" href="/static/css/user_login.css"/>
-			<script type="module" src="/static/js/user_login.js"></script>
+			<link type="text/css" rel="stylesheet" href="/static/css/user_signup.css"/>
+			<script type="module" src="/static/js/user_signup.js"></script>
 		}
 		@body() {
 			<main class="container">
-				<span id="error-message">
+				<h2>Cadastro</h2>
+				<span id="signup-error-message">
 					O email informado já está em uso
 				</span>
 				<form hx-post="/user/signup">

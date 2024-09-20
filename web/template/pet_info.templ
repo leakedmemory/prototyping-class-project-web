@@ -1,6 +1,7 @@
 package template
 
 import (
+	"fmt"
 	"github.com/leakedmemory/prototyping-class-project/internal/models"
 )
 
@@ -37,6 +38,21 @@ templ PetInfo(owner *models.User, pet *models.Pet) {
 							</div>
 							<div class="credentials">
 								<p>Nome: <span class="credential">{ pet.Name }</span></p>
+								if dateDiffInYears(pet.DateOfBirth) > 0 {
+									<p>
+										Idade:
+										<span class="credential">
+											{ fmt.Sprintf("%v anos", dateDiffInYears(pet.DateOfBirth)) }
+										</span>
+									</p>
+								} else {
+									<p>
+										Idade:
+										<span class="credential">
+											{ fmt.Sprintf("%v meses", dateDiffInMonths(pet.DateOfBirth)) }
+										</span>
+									</p>
+								}
 								<p>Tipo: <span class="credential">{ pet.Type }</span></p>
 								<p>Raça: <span class="credential">{ pet.Breed }</span></p>
 							</div>

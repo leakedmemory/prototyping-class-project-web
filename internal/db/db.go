@@ -216,3 +216,18 @@ func (db *DB) GetUserByPetLeashID(leashID string) (*models.User, error) {
 
 	return nil, errors.New("Pet's owner not found")
 }
+
+func (db *DB) GetPetByLeashID(leashID string) (*models.Pet, error) {
+	db.mutex.RLock()
+	defer db.mutex.RUnlock()
+
+	for _, user := range db.userData {
+		for _, pet := range user.Pets {
+			if pet.LeashID == leashID {
+				return &pet, nil
+			}
+		}
+	}
+
+	return nil, errors.New("Pet not found")
+}

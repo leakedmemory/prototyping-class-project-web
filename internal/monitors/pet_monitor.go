@@ -29,6 +29,7 @@ type PetMonitor struct {
 	mutex            sync.RWMutex
 	isBeingMonitored bool
 	isConnected      bool
+	done             chan struct{}
 }
 
 func NewPetMonitor(petName, ownerPhone string) *PetMonitor {
@@ -41,6 +42,7 @@ func NewPetMonitor(petName, ownerPhone string) *PetMonitor {
 		missThreshold:    defaultMissThreshold,
 		isBeingMonitored: false,
 		isConnected:      true,
+		done:             make(chan struct{}),
 	}
 }
 
@@ -50,64 +52,53 @@ func (pm *PetMonitor) Monitor() {
 	}
 
 	pm.isBeingMonitored = true
-	log.Println("Monitoring pets...")
+	log.Printf("Starting monitoring for %v...\n", pm.petName)
 
-	ticker := time.NewTicker(pm.pingWindow)
-	defer ticker.Stop()
+	go func() {
+		ticker := time.NewTicker(pm.pingWindow)
+		defer ticker.Stop()
 
-	for range ticker.C {
-		currentTime := time.Now()
-		intervalFromLastPing := currentTime.Sub(pm.lastPingTime)
-		if intervalFromLastPing > pm.pingWindow {
-			pm.appendPing(currentTime, missed)
-		}
-
-		pm.mutex.RLock()
-
-		if len(pm.lastPings) == defaultMaxLastPingCapacity {
-			missedPings := 0
-			for _, ping := range pm.lastPings {
-				if ping == missed {
-					missedPings++
+		for {
+			select {
+			case <-pm.done:
+				log.Printf("Stopping monitoring for %v...\n", pm.petName)
+				pm.isBeingMonitored = false
+				return
+			case <-ticker.C:
+				currentTime := time.Now()
+				intervalFromLastPing := currentTime.Sub(pm.lastPingTime)
+				if intervalFromLastPing > pm.pingWindow {
+					pm.appendPing(currentTime, missed)
 				}
-			}
 
-			if missedPings > pm.missThreshold && pm.isConnected {
-				pm.isConnected = false
-				log.Printf(
-					"Pet %s may have ran away at %v:%v\n",
-					pm.petName, currentTime.Hour(), currentTime.Minute(),
-				)
+				pm.mutex.RLock()
+				{
+					if len(pm.lastPings) == defaultMaxLastPingCapacity {
+						missedPings := 0
+						for _, ping := range pm.lastPings {
+							if ping == missed {
+								missedPings++
+							}
+						}
 
-				// message := fmt.Sprintf(
-				// 	"Alerta: Seu pet %s pode ter fugido às %v:%v",
-				// 	pm.petName, currentTime.Hour(), currentTime.Minute(),
-				// )
-				//
-				// err := notifications.SendSMS(pm.ownerPhone, message)
-				// if err != nil {
-				// 	log.Printf("Failed to send SMS: %v", err)
-				// }
-			} else if missedPings <= pm.missThreshold && !pm.isConnected {
-				pm.isConnected = true
-				log.Printf(
-					"Pet %s reconnected at %v:%v\n",
-					pm.petName, currentTime.Hour(), currentTime.Minute(),
-				)
-
-				// message := fmt.Sprintf(
-				// 	"Boas notícias: Seu pet %s se reconectou às %v:%v",
-				// 	pm.petName, currentTime.Hour(), currentTime.Minute(),
-				// )
-				//
-				// err := notifications.SendSMS(pm.ownerPhone, message)
-				// if err != nil {
-				// 	log.Printf("Failed to send SMS: %v", err)
-				// }
+						if pm.disconnected(missedPings) {
+							pm.isConnected = false
+							pm.notifyDisconnect(currentTime)
+						} else if pm.reconnected(missedPings) {
+							pm.isConnected = true
+							pm.notifyReconnect(currentTime)
+						}
+					}
+				}
+				pm.mutex.RUnlock()
 			}
 		}
+	}()
+}
 
-		pm.mutex.RUnlock()
+func (pm *PetMonitor) Stop() {
+	if pm.isBeingMonitored {
+		close(pm.done)
 	}
 }
 
@@ -124,4 +115,46 @@ func (pm *PetMonitor) appendPing(t time.Time, status int8) {
 	}
 	pm.lastPings = append(pm.lastPings, status)
 	pm.lastPingTime = t
+}
+
+func (pm *PetMonitor) disconnected(missedPings int) bool {
+	return missedPings > pm.missThreshold && pm.isConnected
+}
+
+func (pm *PetMonitor) notifyDisconnect(t time.Time) {
+	log.Printf(
+		"Pet %s may have ran away at %02d:%02d\n",
+		pm.petName, t.Hour(), t.Minute(),
+	)
+
+	// message := fmt.Sprintf(
+	// 	"ALERTA: Seu pet %s pode ter fugido às %v:%v",
+	// 	pm.petName, t.Hour(), t.Minute(),
+	// )
+	//
+	// err := notifications.SendSMS(pm.ownerPhone, message)
+	// if err != nil {
+	// 	log.Printf("Failed to send SMS: %v", err)
+	// }
+}
+
+func (pm *PetMonitor) reconnected(missedPings int) bool {
+	return missedPings <= pm.missThreshold && !pm.isConnected
+}
+
+func (pm *PetMonitor) notifyReconnect(t time.Time) {
+	log.Printf(
+		"Pet %s reconnected at %02d:%02d\n",
+		pm.petName, t.Hour(), t.Minute(),
+	)
+
+	// message := fmt.Sprintf(
+	// 	"BOAS NOTÍCIAS: Seu pet %s se reconectou às %v:%v",
+	// 	pm.petName, t.Hour(), t.Minute(),
+	// )
+	//
+	// err := notifications.SendSMS(pm.ownerPhone, message)
+	// if err != nil {
+	// 	log.Printf("Failed to send SMS: %v", err)
+	// }
 }

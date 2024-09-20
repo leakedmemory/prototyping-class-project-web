@@ -3,44 +3,44 @@ package template
 import (
 	"fmt"
 	"github.com/leakedmemory/prototyping-class-project/internal/models"
-	"strconv"
 )
 
-templ petCard(pet *models.Pet) {
-	<div class="pet-card">
+templ PetCard(pet *models.Pet) {
+	<div id={ "pet-card-" + pet.ID } class="pet-card">
 		<div class="pet-card-data-column">
-			@petCardData(fmt.Sprintf("Nome: %s", pet.Name))
+			@petCardData("Nome: ", pet.Name)
 			if dateDiffInYears(pet.DateOfBirth) > 0 {
-				@petCardData(fmt.Sprintf("Idade: %s anos", strconv.FormatInt(dateDiffInYears(pet.DateOfBirth), 10)))
+				@petCardData("Idade: ", fmt.Sprintf("%v anos", dateDiffInYears(pet.DateOfBirth)))
 			} else {
-				@petCardData(fmt.Sprintf("Idade: %s meses", strconv.FormatInt(dateDiffInMonths(pet.DateOfBirth), 10)))
+				@petCardData("Idade: ", fmt.Sprintf("%v meses", dateDiffInMonths(pet.DateOfBirth)))
 			}
-			@petCardData(fmt.Sprintf("Tipo: %s", pet.Type))
-			@petCardData(fmt.Sprintf("Raça: %s", pet.Breed))
+			@petCardData("Tipo: ", pet.Type)
+			@petCardData("Raça: ", pet.Breed)
 		</div>
 		<div class="pet-card-delete-column">
-			<image
-				id="show-delete-pet-modal"
-				class="pet-card-delete-icon"
-				src="static/assets/delete_pet_card_icon_256.webp"
-				alt="Ícone em formato de X"
-				hx-post={ "/pet/delete/" + pet.ID }
-				hx-target="closest .pet-list"
+			<button
+				class="pet-card-delete-button"
+				hx-delete={ "/pet/delete/" + pet.ID }
+				hx-target={ "#pet-card-" + pet.ID }
 				hx-swap="outerHTML"
-				hx-trigger="click"
 				hx-confirm={ "Tem certeza que deseja deletar " + pet.Name + "?" }
-			></image>
+			>
+				<image
+					src="static/assets/delete_pet_card_icon_256.webp"
+					alt="Ícone em formato de X"
+				></image>
+			</button>
 		</div>
 	</div>
 }
 
-templ petCardData(data string) {
+templ petCardData(label, data string) {
 	<div class="pet-card-data-container">
 		<image
 			class="pet-card-icon"
 			src="static/assets/pet_card_data_icon_256.webp"
 			alt="Ícone de um gato dentro de um círculo"
 		></image>
-		<span class="pet-card-data">{ data }</span>
+		<p>{ label }<span class="pet-card-data">{ data }</span></p>
 	</div>
 }

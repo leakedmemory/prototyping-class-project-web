@@ -5,27 +5,23 @@ import (
 	"strconv"
 )
 
-templ petListHeader(petsLen int) {
-	<div class="pet-list-header">
-		<span class="pet-num">PETS ({ strconv.FormatInt(int64(petsLen), 10) })</span>
-		<button class="show-add-pet-modal-button">
-			<image
-				id="show-add-pet-modal"
-				class="show-add-pet-modal-icon"
-				src="static/assets/add_pet_modal_icon_256.webp"
-				alt="Ícone de um círculo com símbolo de adição vazado"
-			></image>
-		</button>
-	</div>
-}
-
-templ PetList(pets []models.Pet) {
-	<div class="pet-list">
-		@petListHeader(len(pets))
+templ petList(pets []models.Pet) {
+	<div id="pet-list" class="pet-list">
+		<div class="pet-list-header">
+			<span class="pet-num">PETS ({ strconv.FormatInt(int64(len(pets)), 10) })</span>
+			<button class="show-add-pet-modal-button">
+				<image
+					id="show-add-pet-modal"
+					class="show-add-pet-modal-icon"
+					src="static/assets/add_pet_modal_icon_256.webp"
+					alt="Ícone de um círculo com símbolo de adição vazado"
+				></image>
+			</button>
+		</div>
 		<div class="pets-container">
 			<div class="pets">
 				for _, pet := range pets {
-					@petCard(&pet)
+					@PetCard(&pet)
 				}
 			</div>
 		</div>
@@ -36,7 +32,12 @@ templ addPetModal() {
 	<dialog id="add-pet-modal">
 		<article>
 			<h2>Adicionar Pet</h2>
-			<form id="pet-form" hx-post="/pet/create" hx-target=".pet-list" hx-swap="outerHTML">
+			<form
+				id="pet-form"
+				hx-post="/pet/create"
+				hx-target=".pets"
+				hx-swap="beforeend"
+			>
 				<label>
 					Nome:
 					<input
@@ -75,9 +76,9 @@ templ addPetModal() {
 				<label>
 					ID da coleira:
 					<input
-						name="leashID"
+						name="leash-id"
 						type="text"
-						placeholder="1234"
+						placeholder="83214569"
 						required
 					/>
 				</label>

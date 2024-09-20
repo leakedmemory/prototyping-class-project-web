@@ -1,0 +1,44 @@
+.pet-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  border-style: solid;
+  border-radius: 10px;
+  border-width: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pet-card-delete-column {
+  padding-right: 10px;
+}
+
+.pet-card-delete-button {
+  width: 1em;
+  padding: 0;
+  background: none;
+  border-style: none;
+}
+
+.pet-card-icon {
+  width: 1.2em;
+}
+
+.pet-card-data-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.pet-card-data-container > p {
+  padding-left: 5px;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.pet-card-data {
+  font-weight: normal;
+}
+
+.delete-pet-confirm {
+  color: var(--pico-del-color);
+  border-color: var(--pico-del-color);
+}

@@ -2,10 +2,6 @@ main {
   height: 100vh;
 }
 
-p {
-  margin-bottom: 0;
-}
-
 .pet-info-container {
   display: flex;
   justify-content: center;
@@ -44,6 +40,7 @@ p {
 }
 
 .credentials > p {
+  margin-bottom: 0;
   font-weight: bold;
 }
 

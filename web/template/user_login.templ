@@ -8,7 +8,8 @@ templ UserLogin() {
 		}
 		@body() {
 			<main class="container">
-				<span id="error-message">
+				<h2>Login</h2>
+				<span id="login-error-message">
 					O email ou a senha informados são inválidos
 				</span>
 				<form hx-post="/user/login">
@@ -34,8 +35,10 @@ templ UserLogin() {
 					</fieldset>
 					<input type="submit" value="Entrar"/>
 				</form>
-				<p>
-					Ainda não possui uma conta? <a href="/signup">Criar conta</a>
+				<p class="has-account">
+					Ainda não possui uma conta?
+					<br/>
+					<a href="/signup">Criar conta</a>
 				</p>
 			</main>
 		}

@@ -9,4 +9,5 @@ body {
 main {
   width: 100%;
   max-width: 510px;
+  padding: 20px;
 }

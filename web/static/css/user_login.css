@@ -6,11 +6,15 @@ main {
   height: 100vh;
 }
 
-#error-message {
+#login-error-message {
   color: var(--pico-form-element-invalid-active-border-color);
   visibility: hidden;
   display: none;
   padding-bottom: 10px;
   max-width: 250px;
+  text-align: center;
+}
+
+.has-account {
   text-align: center;
 }

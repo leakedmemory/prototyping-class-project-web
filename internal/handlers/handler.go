@@ -47,7 +47,7 @@ func initPetMonitors(database *db.DB) map[string]*monitors.PetMonitor {
 		for _, pet := range user.Pets {
 			pm := monitors.NewPetMonitor(pet.Name, user.Phone)
 			pms[pet.LeashID] = pm
-			go pm.Monitor()
+			pm.Monitor()
 		}
 	}
 

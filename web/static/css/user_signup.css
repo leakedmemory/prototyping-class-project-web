@@ -6,7 +6,7 @@ main {
   height: 100vh;
 }
 
-#error-message {
+#signup-error-message {
   color: var(--pico-form-element-invalid-active-border-color);
   visibility: hidden;
   display: none;

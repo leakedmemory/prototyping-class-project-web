@@ -1,9 +1,5 @@
 .user {
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
   border-style: solid;
   border-radius: 10px;
   border-width: 1px;
@@ -11,14 +7,28 @@
   padding: 15px;
 }
 
+.user-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .user-icon {
   width: 80px;
   height: auto;
-  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
-.user-credentials {
+.user-card-credentials {
   display: flex;
   flex-direction: column;
   line-height: 25px;
+}
+.user-card-credentials > p {
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.user-card-credential {
+  font-weight: normal;
 }
