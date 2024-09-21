@@ -36,7 +36,7 @@ func (h *Handler) UserSignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
-		http.Error(w, "Failed to create session", http.StatusInternalServerError)
+		http.Error(w, "Failed to create session", http.StatusUnauthorized)
 		return
 	}
 
@@ -68,7 +68,7 @@ func (h *Handler) UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
-		http.Error(w, "Failed to create session", http.StatusInternalServerError)
+		http.Error(w, "Failed to create session", http.StatusUnauthorized)
 		return
 	}
 
@@ -91,7 +91,7 @@ func (h *Handler) UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	session, err := store.Get(r, "e-leash-session")
 	if err != nil {
-		http.Error(w, "Failed to get session", http.StatusInternalServerError)
+		http.Error(w, "Failed to get session", http.StatusUnauthorized)
 		return
 	}
 
@@ -102,5 +102,6 @@ func (h *Handler) UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/login", http.StatusFound)
+	w.Header().Set("HX-Redirect", "/login")
+	w.WriteHeader(http.StatusOK)
 }

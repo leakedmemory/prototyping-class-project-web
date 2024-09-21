@@ -10,12 +10,12 @@ templ petList(pets []models.Pet) {
 		<div class="pet-list-header">
 			<span class="pet-num">PETS ({ strconv.FormatInt(int64(len(pets)), 10) })</span>
 			<button class="show-add-pet-modal-button">
-				<image
+				<img
 					id="show-add-pet-modal"
 					class="show-add-pet-modal-icon"
 					src="static/assets/add_pet_modal_icon_256.webp"
 					alt="Ícone de um círculo com símbolo de adição vazado"
-				></image>
+				/>
 			</button>
 		</div>
 		<div class="pets-container">

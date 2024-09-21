@@ -32,10 +32,10 @@ templ PetCard(pet *models.Pet) {
 				hx-swap="outerHTML"
 				hx-confirm={ "Tem certeza que deseja deletar " + pet.Name + "?" }
 			>
-				<image
+				<img
 					src="static/assets/delete_pet_card_icon_256.webp"
 					alt="Ícone em formato de X"
-				></image>
+				/>
 			</button>
 		</div>
 	</div>
@@ -43,11 +43,11 @@ templ PetCard(pet *models.Pet) {
 
 templ petCardData(label, data string) {
 	<div class="pet-card-data-container">
-		<image
+		<img
 			class="pet-card-icon"
 			src="static/assets/pet_card_data_icon_256.webp"
 			alt="Ícone de um gato dentro de um círculo"
-		></image>
+		/>
 		<p>{ label }<span class="pet-card-data">{ data }</span></p>
 	</div>
 }
