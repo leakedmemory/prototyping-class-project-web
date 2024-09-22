@@ -152,6 +152,8 @@ func (pm *PetMonitor) checkConnectionStatus() {
 }
 
 func (pm *PetMonitor) notifyDisconnect(t *time.Time) {
+	log.Println("Sending SMS to pet's owner...")
+
 	message := fmt.Sprintf(
 		"ALERTA: Seu pet %s pode ter fugido às %02d:%02d.",
 		pm.petName, t.In(brazilLocation).Hour(), t.In(brazilLocation).Minute(),
@@ -164,6 +166,8 @@ func (pm *PetMonitor) notifyDisconnect(t *time.Time) {
 }
 
 func (pm *PetMonitor) notifyReconnect(t *time.Time) {
+	log.Println("Sending SMS to pet's owner...")
+
 	message := fmt.Sprintf(
 		"BOAS NOTÍCIAS: Seu pet %s se reconectou às %02d:%02d.",
 		pm.petName, t.In(brazilLocation).Hour(), t.In(brazilLocation).Minute(),
