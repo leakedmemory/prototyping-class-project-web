@@ -1,7 +1,7 @@
 MAIN := cmd/api/main.go
 BIN := main
 
-.PHONY: all build run test clean watch
+.PHONY: all build run clean watch
 
 all: build
 
@@ -14,10 +14,6 @@ run:
 	@echo "Running..."
 	@templ generate
 	@go run $(MAIN)
-
-test:
-	@echo "Testing..."
-	@go test ./... -v
 
 clean:
 	@echo "Cleaning..."
