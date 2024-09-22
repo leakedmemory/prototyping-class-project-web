@@ -21,7 +21,7 @@ templ PetCard(pet *models.Pet) {
 			<div
 				class="pet-status-indicator"
 				hx-get={ "/pet/connection-status?leash-id=" + pet.LeashID }
-				hx-trigger="every 15s"
+				hx-trigger="load, every 15s"
 			>
 				<div class="status-circle" data-connected="true"></div>
 			</div>

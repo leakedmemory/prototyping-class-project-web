@@ -1,0 +1,20 @@
+.pet-qrcode-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.pet-qrcode-wrapper {
+  text-align: center;
+}
+
+.pet-qrcode-header {
+  font-size: 1.3rem;
+  max-width: 400px;
+}
+
+.pet-qrcode-image {
+  max-width: 100%;
+  height: auto;
+}

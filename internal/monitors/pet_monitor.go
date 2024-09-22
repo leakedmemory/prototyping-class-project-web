@@ -131,20 +131,27 @@ func (pm *PetMonitor) checkConnectionStatus() {
 	}
 
 	if consecutiveMissedPings > pm.missThreshold && pm.isConnected {
+		t := time.Now()
+		log.Printf(
+			"Pet %s may have ran away at %02d:%02d\n",
+			pm.petName, t.Hour(), t.Minute(),
+		)
+
 		pm.isConnected = false
-		// pm.notifyDisconnect(time.Now())
+		pm.notifyDisconnect(&t)
 	} else if consecutiveMissedPings <= pm.missThreshold && !pm.isConnected {
+		t := time.Now()
+		log.Printf(
+			"Pet %s reconnected at %02d:%02d\n",
+			pm.petName, t.Hour(), t.Minute(),
+		)
+
 		pm.isConnected = true
-		// pm.notifyReconnect(time.Now())
+		pm.notifyReconnect(&t)
 	}
 }
 
-func (pm *PetMonitor) notifyDisconnect(t time.Time) {
-	log.Printf(
-		"Pet %s may have ran away at %02d:%02d\n",
-		pm.petName, t.Hour(), t.Minute(),
-	)
-
+func (pm *PetMonitor) notifyDisconnect(t *time.Time) {
 	message := fmt.Sprintf(
 		"ALERTA: Seu pet %s pode ter fugido às %02d:%02d.",
 		pm.petName, t.In(brazilLocation).Hour(), t.In(brazilLocation).Minute(),
@@ -156,12 +163,7 @@ func (pm *PetMonitor) notifyDisconnect(t time.Time) {
 	}
 }
 
-func (pm *PetMonitor) notifyReconnect(t time.Time) {
-	log.Printf(
-		"Pet %s reconnected at %02d:%02d\n",
-		pm.petName, t.Hour(), t.Minute(),
-	)
-
+func (pm *PetMonitor) notifyReconnect(t *time.Time) {
 	message := fmt.Sprintf(
 		"BOAS NOTÍCIAS: Seu pet %s se reconectou às %02d:%02d.",
 		pm.petName, t.In(brazilLocation).Hour(), t.In(brazilLocation).Minute(),

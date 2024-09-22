@@ -236,9 +236,9 @@ func (h *Handler) PetGetQRCodeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	base64Data := base64.StdEncoding.EncodeToString(imageData)
+	base64Img := base64.StdEncoding.EncodeToString(imageData)
 
-	template.PetQRCode(base64Data).Render(r.Context(), w)
+	template.PetQRCode(base64Img).Render(r.Context(), w)
 }
 
 func (h *Handler) PetConnectionStatusHandler(w http.ResponseWriter, r *http.Request) {
