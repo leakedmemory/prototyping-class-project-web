@@ -1,30 +1,44 @@
 package monitors
 
 import (
-	// "fmt"
+	"fmt"
 	"log"
 	"sync"
+	"sync/atomic"
 	"time"
-	// "github.com/leakedmemory/prototyping-class-project/pkg/notifications"
+
+	"github.com/leakedmemory/prototyping-class-project/pkg/notifications"
 )
 
 const (
-	defaultPingWindow          = 1000 * time.Millisecond
+	defaultPingWindow          = 2 * time.Second
 	defaultMaxLastPingCapacity = 10
-	defaultMissThreshold       = 4
+	defaultMissThreshold       = 3
 )
 
 const (
-	received int8 = iota
+	received uint = iota
 	missed
 )
+
+var brazilLocation *time.Location
+
+func init() {
+	var err error
+	brazilLocation, err = time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		log.Printf("Failed to load Brazil location: %v\n", err)
+		// fallback to a fixed offset if loading the location fails
+		brazilLocation = time.FixedZone("UTC-03", -3*60*60)
+	}
+}
 
 type PetMonitor struct {
 	petName          string
 	ownerPhone       string
-	lastPingTime     time.Time
+	lastPingTime     atomic.Int64
 	pingWindow       time.Duration
-	lastPings        []int8
+	lastPings        []uint
 	missThreshold    int
 	pingsMutex       sync.RWMutex
 	isBeingMonitored bool
@@ -36,13 +50,12 @@ func NewPetMonitor(petName, ownerPhone string) *PetMonitor {
 	return &PetMonitor{
 		petName:          petName,
 		ownerPhone:       ownerPhone,
-		lastPingTime:     time.Now(),
 		pingWindow:       defaultPingWindow,
-		lastPings:        make([]int8, 0, defaultMaxLastPingCapacity),
+		lastPings:        make([]uint, 0, defaultMaxLastPingCapacity),
 		missThreshold:    defaultMissThreshold,
 		isBeingMonitored: false,
 		isConnected:      true,
-		done:             make(chan struct{}),
+		done:             make(chan struct{}, 1),
 	}
 }
 
@@ -53,6 +66,7 @@ func (pm *PetMonitor) Monitor() {
 
 	pm.isBeingMonitored = true
 	log.Printf("Starting monitoring for %v...\n", pm.petName)
+	pm.lastPingTime.Store(time.Now().UnixNano())
 
 	go func() {
 		ticker := time.NewTicker(pm.pingWindow)
@@ -66,31 +80,15 @@ func (pm *PetMonitor) Monitor() {
 				return
 			case <-ticker.C:
 				currentTime := time.Now()
-				intervalFromLastPing := currentTime.Sub(pm.lastPingTime)
-				if intervalFromLastPing > pm.pingWindow {
-					pm.appendPing(currentTime, missed)
+				lastPing := time.Unix(0, pm.lastPingTime.Load())
+
+				if currentTime.Sub(lastPing) > pm.pingWindow {
+					pm.appendPing(missed)
+				} else {
+					pm.appendPing(received)
 				}
 
-				pm.pingsMutex.RLock()
-				{
-					if len(pm.lastPings) == defaultMaxLastPingCapacity {
-						missedPings := 0
-						for _, ping := range pm.lastPings {
-							if ping == missed {
-								missedPings++
-							}
-						}
-
-						if pm.disconnected(missedPings) {
-							pm.isConnected = false
-							pm.notifyDisconnect(currentTime)
-						} else if pm.reconnected(missedPings) {
-							pm.isConnected = true
-							pm.notifyReconnect(currentTime)
-						}
-					}
-				}
-				pm.pingsMutex.RUnlock()
+				pm.checkConnectionStatus()
 			}
 		}
 	}()
@@ -98,15 +96,15 @@ func (pm *PetMonitor) Monitor() {
 
 func (pm *PetMonitor) Stop() {
 	if pm.isBeingMonitored {
-		close(pm.done)
+		pm.done <- struct{}{}
 	}
 }
 
 func (pm *PetMonitor) Ping() {
-	pm.appendPing(time.Now(), received)
+	pm.lastPingTime.Store(time.Now().UnixNano())
 }
 
-func (pm *PetMonitor) appendPing(t time.Time, status int8) {
+func (pm *PetMonitor) appendPing(status uint) {
 	pm.pingsMutex.Lock()
 	defer pm.pingsMutex.Unlock()
 
@@ -114,11 +112,31 @@ func (pm *PetMonitor) appendPing(t time.Time, status int8) {
 		pm.lastPings = pm.lastPings[1:]
 	}
 	pm.lastPings = append(pm.lastPings, status)
-	pm.lastPingTime = t
 }
 
-func (pm *PetMonitor) disconnected(missedPings int) bool {
-	return missedPings > pm.missThreshold && pm.isConnected
+func (pm *PetMonitor) checkConnectionStatus() {
+	pm.pingsMutex.RLock()
+	defer pm.pingsMutex.RUnlock()
+
+	if len(pm.lastPings) < defaultMaxLastPingCapacity {
+		return
+	}
+
+	consecutiveMissedPings := 0
+	for i := len(pm.lastPings) - 1; i >= 0; i-- {
+		if pm.lastPings[i] == received {
+			break
+		}
+		consecutiveMissedPings++
+	}
+
+	if consecutiveMissedPings > pm.missThreshold && pm.isConnected {
+		pm.isConnected = false
+		// pm.notifyDisconnect(time.Now())
+	} else if consecutiveMissedPings <= pm.missThreshold && !pm.isConnected {
+		pm.isConnected = true
+		// pm.notifyReconnect(time.Now())
+	}
 }
 
 func (pm *PetMonitor) notifyDisconnect(t time.Time) {
@@ -127,19 +145,15 @@ func (pm *PetMonitor) notifyDisconnect(t time.Time) {
 		pm.petName, t.Hour(), t.Minute(),
 	)
 
-	// message := fmt.Sprintf(
-	// 	"ALERTA: Seu pet %s pode ter fugido às %v:%v",
-	// 	pm.petName, t.Hour(), t.Minute(),
-	// )
-	//
-	// err := notifications.SendSMS(pm.ownerPhone, message)
-	// if err != nil {
-	// 	log.Printf("Failed to send SMS: %v", err)
-	// }
-}
+	message := fmt.Sprintf(
+		"ALERTA: Seu pet %s pode ter fugido às %02d:%02d.",
+		pm.petName, t.In(brazilLocation).Hour(), t.In(brazilLocation).Minute(),
+	)
 
-func (pm *PetMonitor) reconnected(missedPings int) bool {
-	return missedPings <= pm.missThreshold && !pm.isConnected
+	err := notifications.SendSMS(pm.ownerPhone, message)
+	if err != nil {
+		log.Printf("Failed to send SMS: %v\n", err)
+	}
 }
 
 func (pm *PetMonitor) notifyReconnect(t time.Time) {
@@ -148,15 +162,15 @@ func (pm *PetMonitor) notifyReconnect(t time.Time) {
 		pm.petName, t.Hour(), t.Minute(),
 	)
 
-	// message := fmt.Sprintf(
-	// 	"BOAS NOTÍCIAS: Seu pet %s se reconectou às %v:%v",
-	// 	pm.petName, t.Hour(), t.Minute(),
-	// )
-	//
-	// err := notifications.SendSMS(pm.ownerPhone, message)
-	// if err != nil {
-	// 	log.Printf("Failed to send SMS: %v", err)
-	// }
+	message := fmt.Sprintf(
+		"BOAS NOTÍCIAS: Seu pet %s se reconectou às %02d:%02d.",
+		pm.petName, t.In(brazilLocation).Hour(), t.In(brazilLocation).Minute(),
+	)
+
+	err := notifications.SendSMS(pm.ownerPhone, message)
+	if err != nil {
+		log.Printf("Failed to send SMS: %v\n", err)
+	}
 }
 
 func (pm *PetMonitor) IsConnected() bool {

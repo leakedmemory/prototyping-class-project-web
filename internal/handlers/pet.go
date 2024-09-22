@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -129,9 +130,10 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 
 	h.petMonitorsMutex.Lock()
 	{
-		pm := h.petMonitors[pet.LeashID]
-		pm.Stop()
-		delete(h.petMonitors, pet.LeashID)
+		if pm, ok := h.petMonitors[pet.LeashID]; ok {
+			pm.Stop()
+			delete(h.petMonitors, pet.LeashID)
+		}
 	}
 	h.petMonitorsMutex.Unlock()
 
@@ -148,6 +150,32 @@ func (h *Handler) DeletePetHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("X-Pet-Count", fmt.Sprintf("%d", len(owner.Pets)))
 	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) PetPingHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	leashID := r.URL.Query().Get("leash_id")
+	if leashID == "" {
+		http.Error(w, "Missing 'leash_id' parameter", http.StatusBadRequest)
+		return
+	}
+
+	h.petMonitorsMutex.RLock()
+	if pm, ok := h.petMonitors[leashID]; ok {
+		pm.Ping()
+		h.petMonitorsMutex.RUnlock()
+	} else {
+		http.Error(w, "Monitor not found", http.StatusInternalServerError)
+		h.petMonitorsMutex.RUnlock()
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Ping received"})
 }
 
 func (h *Handler) PetInfoHandler(w http.ResponseWriter, r *http.Request) {
@@ -226,9 +254,14 @@ func (h *Handler) PetConnectionStatusHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	h.petMonitorsMutex.RLock()
-	isConnected := h.petMonitors[leashID].IsConnected()
+	pm, ok := h.petMonitors[leashID]
 	h.petMonitorsMutex.RUnlock()
 
+	if !ok {
+		http.Error(w, "Pet monitor not found", http.StatusNotFound)
+		return
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, `<div class="status-circle" data-connected="%t"></div>`, isConnected)
+	fmt.Fprintf(w, `<div class="status-circle" data-connected="%t"></div>`, pm.IsConnected())
 }

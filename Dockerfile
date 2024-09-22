@@ -12,6 +12,9 @@ RUN mkdir /data
 
 FROM debian:bookworm
 
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /app/main /usr/local/bin/
 COPY --from=builder /app/web/static /usr/local/bin/web/static
+
 CMD ["/usr/local/bin/main"]
